@@ -10,10 +10,6 @@ class AuthController {
       console.log(error);
       res.status(400).send(error);
     }
-
-    const users = await User.find({});
-
-    return users;
   }
 
   static async registerUser(req, res) {

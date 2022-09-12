@@ -38,6 +38,30 @@ const userSchema = new Schema(
     timestamps: true,
   }
 );
+//Middleware for hashing password before save
+userSchema.pre("save", async function (next) {
+  const user = this;
+
+  if (user.isModified("password") || user.isNew) {
+    const hashedPassword = await bcrypt.hash(user.password, 8);
+
+    user.password = hashedPassword;
+
+    return next();
+  }
+
+  return next();
+});
+
+//Schema method for comparing passwords
+userSchema.methods.comparePasswords = async function (credentialsPassword) {
+  const isPasswordValid = await bcrypt.compare(
+    credentialsPassword,
+    this.password
+  );
+
+  return isPasswordValid;
+};
 
 const User = mongoose.model("User", userSchema);
 //------------------------------------------
