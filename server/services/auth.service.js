@@ -43,6 +43,13 @@ const User = mongoose.model("User", userSchema);
 //------------------------------------------
 // Auth service
 class AuthService {
+  //Get all users
+  static async getAllUsers() {
+    const users = await User.find({});
+
+    return users;
+  }
+
   static async registerUser(userData) {
     const user = new User(userData);
 
@@ -68,3 +75,5 @@ class AuthService {
     return user;
   }
 }
+
+module.exports = AuthService;
