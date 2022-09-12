@@ -18,7 +18,7 @@ class ProductService {
     const product = new Product(productData);
 
     const productExists = products.some(product => product.name.toLowerCase() === productData.name.toLowerCase() && product.brand.toLowerCase() === productData.brand.toLowerCase());
-    if (productExists) return new Promise.reject({ message: "Product already exists" });
+    if (productExists) return Promise.reject({ message: "Product already exists" });
 
     const newProduct = await product.save();
     return newProduct;
