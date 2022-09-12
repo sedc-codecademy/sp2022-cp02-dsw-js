@@ -31,7 +31,7 @@ class ProductController {
       res.status(201).send(createdProduct);
     } catch (error) {
       console.log(error);
-      res.status(400).send(error);
+      res.status(400).send({ error });
     }
   }
   //Update product
