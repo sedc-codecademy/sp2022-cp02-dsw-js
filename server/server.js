@@ -6,7 +6,8 @@ const globalRouter = require("./const/router");
 const cors = require("cors");
 const helmet = require("helmet");
 
-const MONGO_URI = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_CLUSTER}.716de.mongodb.net/?retryWrites=true&w=majority`;
+const MONGO_URI = `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@${process.env.MONGO_CLUSTER}.716de.mongodb.net/${process.env.MONGO_DB_NAME}?retryWrites=true&w=majority`;
+
 const PORT = process.env.PORT || 3000;
 const HOST = process.env.HOST || "0.0.0.0";
 
