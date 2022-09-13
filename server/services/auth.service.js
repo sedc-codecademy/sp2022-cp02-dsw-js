@@ -64,7 +64,6 @@ userSchema.methods.comparePasswords = async function (credentialsPassword) {
 };
 
 const User = mongoose.model("User", userSchema);
-module.exports = User;
 //------------------------------------------
 // Auth service
 class AuthService {
@@ -101,4 +100,4 @@ class AuthService {
   }
 }
 
-module.exports = AuthService;
+module.exports = { AuthService, User };
