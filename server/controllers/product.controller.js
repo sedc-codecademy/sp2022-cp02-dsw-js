@@ -1,4 +1,5 @@
 const ProductService = require("../services/product.service");
+const Product = require("../models/product.model");
 
 class ProductController {
   //Get all products
@@ -14,9 +15,12 @@ class ProductController {
   //Get product by id
   static async getProductById(req, res) {
     try {
-      const { id: productId } = req.params
+      const { id: productId } = req.params;
       const product = await ProductService.getProductById(productId);
-      if (!product) return res.status(404).send({ message: `Product with id: ${productId} not found` })
+      if (!product)
+        return res
+          .status(404)
+          .send({ message: `Product with id: ${productId} not found` });
       res.status(200).send(product);
     } catch (error) {
       console.log(error);
@@ -39,8 +43,12 @@ class ProductController {
     try {
       const productId = req.params.id;
       const updateData = req.body;
-      if (updateData.id) return send.status(400).send({ message: "Invalid update" })
-      const updatedProduct = await ProductService.updateProduct(productId, updateData);
+      if (updateData.id)
+        return send.status(400).send({ message: "Invalid update" });
+      const updatedProduct = await ProductService.updateProduct(
+        productId,
+        updateData
+      );
       res.status(200).send(updatedProduct);
     } catch (error) {
       console.log(error);
@@ -52,9 +60,13 @@ class ProductController {
     try {
       const productId = req.params.id;
       await ProductService.deleteProduct(productId);
-      res.status(200).send({ message: `Product with id: ${productId} deleted` });
+      res
+        .status(200)
+        .send({ message: `Product with id: ${productId} deleted` });
     } catch (error) {
-      res.status(400).send({ message: `Product with id: ${error.value} not found` });
+      res
+        .status(400)
+        .send({ message: `Product with id: ${error.value} not found` });
     }
   }
 }
