@@ -1,0 +1,47 @@
+{
+	"name": "oryx",
+	"version": "1.0.0",
+	"description": " Drop Shipping Store with all the basic functionality of a webshop, including having an order system, listing products, a cart, and a form for the user to fill in their information so they could get their order.",
+	"main": "index.js",
+	"contributors": [
+		{
+			"name": "Zoran Karbev",
+			"email": "zorankarbev@gmail.com"
+		},
+		{
+			"name": "Boris Stevanovic",
+			"email": "borisstevanovic0810@gmail.com"
+		},
+		{
+			"name": "Aleksandar Ichev",
+			"email": "ackowwokca@gmail.com"
+		},
+		{
+			"name": "Vedra Stojanovska",
+			"email": "vedrastojanovska@gmail.com"
+		},
+		{
+			"name": "Anastasija Dimkovska",
+			"email": "anastasijad53@gmail.com"
+		},
+		{
+			"name": "Hacci Korbayram",
+			"email": "hacci_mk@hotmail.com"
+		}
+	],
+	"scripts": {
+		"start": "webpack-dev-server --watch-content-base --open",
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"build": "webpack"
+	},
+	"license": "ISC",
+	"dependencies": {
+		"axios": "^0.27.2",
+		"mdb-ui-kit": "^4.2.0"
+	},
+	"devDependencies": {
+		"webpack": "^4.43.0",
+		"webpack-cli": "^3.3.12",
+		"webpack-dev-server": "^3.11.0"
+	}
+}

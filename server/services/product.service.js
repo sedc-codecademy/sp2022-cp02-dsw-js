@@ -17,8 +17,13 @@ class ProductService {
     const products = await this.getAllProducts();
     const product = new Product(productData);
 
-    const productExists = products.some(product => product.name.toLowerCase() === productData.name.toLowerCase() && product.brand.toLowerCase() === productData.brand.toLowerCase());
-    if (productExists) return Promise.reject({ message: "Product already exists" });
+    const productExists = products.some(
+      (product) =>
+        product.name.toLowerCase() === productData.name.toLowerCase() &&
+        product.brand.toLowerCase() === productData.brand.toLowerCase()
+    );
+    if (productExists)
+      return Promise.reject({ message: "Product already exists" });
 
     const newProduct = await product.save();
     return newProduct;
@@ -32,7 +37,7 @@ class ProductService {
     console.log(productKeys.length);
 
     const updateKeys = Object.keys(updateData);
-    updateKeys.forEach(key => {
+    updateKeys.forEach((key) => {
       if (key !== "_id") {
         product[key] = updateData[key];
       }
@@ -45,6 +50,6 @@ class ProductService {
   static async deleteProduct(productId) {
     await Product.findByIdAndDelete(productId);
   }
-};
+}
 
 module.exports = ProductService;
