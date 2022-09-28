@@ -1,71 +1,6 @@
-// temp userSchema
-const mongoose = require("mongoose");
-const { Schema } = mongoose;
-const validator = require("validator");
 const bcrypt = require("bcryptjs");
+const { User } = require("../models/auth.model");
 
-const userSchema = new Schema(
-  {
-    firstName: {
-      type: String,
-      required: true,
-      minLength: 2,
-    },
-    lastName: {
-      type: String,
-      required: true,
-      minLength: 2,
-    },
-    age: {
-      type: Number,
-      required: true,
-    },
-    email: {
-      type: String,
-      validate: {
-        validator: (value) => validator.isEmail(value),
-      },
-      required: true,
-      unique: true,
-    },
-    password: {
-      type: String,
-      required: true,
-      minLength: 8,
-    },
-  },
-  {
-    timestamps: true,
-  }
-);
-//Middleware for hashing password before save
-userSchema.pre("save", async function (next) {
-  const user = this;
-
-  if (user.isModified("password") || user.isNew) {
-    const hashedPassword = await bcrypt.hash(user.password, 8);
-
-    user.password = hashedPassword;
-
-    return next();
-  }
-
-  return next();
-});
-
-//Schema method for comparing passwords
-userSchema.methods.comparePasswords = async function (credentialsPassword) {
-  const isPasswordValid = await bcrypt.compare(
-    credentialsPassword,
-    this.password
-  );
-
-  return isPasswordValid;
-};
-
-const User = mongoose.model("User", userSchema);
-//------------------------------------------
-// Auth service
 class AuthService {
   //Get all users
   static async getAllUsers() {
@@ -74,30 +9,81 @@ class AuthService {
     return users;
   }
 
-  static async registerUser(userData) {
-    const user = new User(userData);
+  //Register
+  static async registerUser(email, password, firstName, lastName, age) {
+    const user = await User.findOne({ email });
+    if (user) {
+      return Promise.reject({ message: "User already exists" });
+    }
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
 
-    await user.save();
-
-    return user;
+    try {
+      const newUser = new User({
+        email,
+        password: hashedPassword,
+        firstName,
+        lastName,
+        age,
+      });
+      await newUser.save();
+      return Promise.resolve({ email });
+    } catch (error) {
+      console.log("asd");
+      return Promise.reject(error);
+    }
   }
-  static async loginUser(credentials) {
-    const { email, password } = credentials;
 
-    const user = await User.findOne({ email: email });
+  //Login
+  static async loginUser(email, password) {
+    try {
+      const user = await User.findOne({ email });
+      console.log("Inside model: ", user);
+      if (!user) {
+        return Promise.reject({ msg: "User does not exist!" });
+      }
+      const isPasswordValid = await bcrypt.compare(password, user.password);
+      console.log(isPasswordValid);
 
-    if (!user) {
-      return Promise.reject({ msg: "Invalid Credentials" });
+      if (!isPasswordValid) {
+        return Promise.reject({ msg: "Invalid Credentials" });
+      }
+      const { password: hashedPassword, ...userWithoutPassword } = user;
+
+      return userWithoutPassword;
+    } catch (error) {
+      Promise.reject({ message: "Password is invalid" });
     }
+  }
 
-    const isPasswordValid = await user.comparePasswords(password);
+  // Save Refresh Token
+  static async saveRefreshToken(userId, refreshToken) {
+    const user = await User.findById(userId).exec();
 
-    if (!isPasswordValid) {
-      return Promise.reject({ msg: "Invalid Credentials" });
-    }
+    user.refreshTokens.push(refreshToken);
 
-    return user;
+    await User.updateOne(
+      { _id: userId },
+      { $set: { refreshTokens: user.refreshTokens } }
+    );
+    const { password, ...userWithoutPassword } = user;
+    return userWithoutPassword;
+  }
+
+  // Delete Refresh Token
+  static async deleteRefreshToken(userId, refreshToken) {
+    const user = await User.findById(userId).exec();
+
+    user.refreshTokens = user.refreshTokens.filter(
+      (token) => token !== refreshToken
+    );
+
+    await User.updateOne(
+      { _id: userId },
+      { $set: { refreshTokens: user.refreshTokens } }
+    );
   }
 }
 
-module.exports = { AuthService, User };
+// module.exports = { AuthService, User };
+module.exports = { AuthService };
