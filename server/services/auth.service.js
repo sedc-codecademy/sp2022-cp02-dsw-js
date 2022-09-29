@@ -1,89 +1,86 @@
-const bcrypt = require("bcryptjs");
-const { User } = require("../models/auth.model");
+const verifyRefreshToken = require("../const/jwt.const");
+const User = require("../models/user.model");
 
 class AuthService {
-  //Get all users
-  static async getAllUsers() {
-    const users = await User.find({});
-
-    return users;
-  }
-
-  //Register
-  static async registerUser(email, password, firstName, lastName, age) {
-    const user = await User.findOne({ email });
-    if (user) {
-      return Promise.reject({ message: "User already exists" });
-    }
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
-
+  // 1. Register user
+  static async registerUser(userData) {
     try {
-      const newUser = new User({
-        email,
-        password: hashedPassword,
-        firstName,
-        lastName,
-        age,
-      });
-      await newUser.save();
-      return Promise.resolve({ email });
+      const user = new User(userData);
+
+      const createdUser = await user.save();
+
+      return createdUser;
     } catch (error) {
-      console.log("asd");
-      return Promise.reject(error);
+      throw error;
     }
   }
-
-  //Login
+  // 2. Login user
   static async loginUser(email, password) {
     try {
       const user = await User.findOne({ email });
-      console.log("Inside model: ", user);
-      if (!user) {
-        return Promise.reject({ msg: "User does not exist!" });
-      }
-      const isPasswordValid = await bcrypt.compare(password, user.password);
-      console.log(isPasswordValid);
 
-      if (!isPasswordValid) {
-        return Promise.reject({ msg: "Invalid Credentials" });
-      }
-      const { password: hashedPassword, ...userWithoutPassword } = user;
+      if (!user) throw "Invalid Credentials";
 
-      return userWithoutPassword;
+      const isPasswordValid = await user.comparePasswords(password);
+
+      if (!isPasswordValid) throw "Invalid Credentails";
+
+      return user;
     } catch (error) {
-      Promise.reject({ message: "Password is invalid" });
+      throw error;
     }
   }
 
-  // Save Refresh Token
-  static async saveRefreshToken(userId, refreshToken) {
-    const user = await User.findById(userId).exec();
+  // Validate refresh token
+  static async validateRefreshToken(refreshToken) {
+    try {
+      const { userId } = verifyRefreshToken(refreshToken);
 
-    user.refreshTokens.push(refreshToken);
+      const foundUser = await User.findById(userId);
 
-    await User.updateOne(
-      { _id: userId },
-      { $set: { refreshTokens: user.refreshTokens } }
-    );
-    const { password, ...userWithoutPassword } = user;
-    return userWithoutPassword;
+      if (!foundUser) throw new Error();
+
+      if (!foundUser.refreshTokens.find((token) => token === refreshToken))
+        throw new Error();
+
+      return foundUser;
+    } catch (error) {
+      throw error;
+    }
   }
 
-  // Delete Refresh Token
-  static async deleteRefreshToken(userId, refreshToken) {
-    const user = await User.findById(userId).exec();
+  // Save refresh token
+  static async saveRefreshToken(user, refreshToken) {
+    try {
+      // user.refreshTokens.push(refreshToken);
 
-    user.refreshTokens = user.refreshTokens.filter(
-      (token) => token !== refreshToken
-    );
+      await user.save();
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  }
+  // Delete refresh token
+  static async deleteRefreshToken(user, refreshToken) {
+    try {
+      user.refreshTokens = user.refreshTokens.filter(
+        (token) => token !== refreshToken
+      );
 
-    await User.updateOne(
-      { _id: userId },
-      { $set: { refreshTokens: user.refreshTokens } }
-    );
+      await user.save();
+    } catch (error) {
+      throw error;
+    }
+  }
+  static async deleteAllRefreshTokens(user) {
+    try {
+      user.refreshTokens = [];
+
+      await user.save();
+    } catch (error) {
+      throw error;
+    }
   }
 }
 
-// module.exports = { AuthService, User };
-module.exports = { AuthService };
+module.exports = AuthService;

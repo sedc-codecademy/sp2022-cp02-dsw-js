@@ -1,23 +1,23 @@
-const { sign, verify } = require("jsonwebtoken");
+const jwt = require("jsonwebtoken");
 
 const createAccessToken = (userId) => {
-  return sign({ userId }, process.env.ACCESS_TOKEN_SECRET, {
+  return jwt.sign({ userId }, process.env.ACCESS_TOKEN_SECRET, {
     expiresIn: "10m",
   });
 };
 
+const verifyAccessToken = (token) => {
+  return jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+};
+
 const createRefreshToken = (userId) => {
-  return sign({ userId }, process.env.REFRESH_TOKEN_SECRET, {
+  return jwt.sign({ userId }, process.env.REFRESH_TOKEN_SECRET, {
     expiresIn: "7d",
   });
 };
 
-const verifyAccessToken = (token) => {
-  return verify(token, process.env.ACCESS_TOKEN_SECRET);
-};
-
-const verifyRefreshToken = (refreshToken) => {
-  return verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
+const verifyRefreshToken = (token) => {
+  return jwt.verify(token, process.env.REFRESH_TOKEN_SECRET);
 };
 
 module.exports = {

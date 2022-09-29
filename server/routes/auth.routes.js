@@ -1,17 +1,16 @@
 const router = require("express").Router();
 const AuthController = require("../controllers/auth.controller");
-const tokenValidator = require("../middleware/token-validator.middleware");
-const userValidator = require("../middleware/user-validator.middleware");
+const authValidator = require("../middlewares/auth.middleware");
 
-//Get all users
-// router.get("/", tokenValidator, AuthController.getAllUsers);
-router.get("/", AuthController.getAllUsers);
-
-// http://localhost:3000/api/auth/register
-router.post("/register", userValidator, AuthController.registerUser);
-// http://localhost:3000/api/auth/login
+// 1. Register User
+router.post("/register", AuthController.registerUser);
+// 2. Login User
 router.post("/login", AuthController.loginUser);
-// http://localhost:3000/api/auth/logout
-router.post("/logout", AuthController.logoutUser);
+// 3. Refresh access token
+router.post("/refresh-token", AuthController.refreshAcessToken);
+// 4. Logout user
+router.post("/logout", authValidator, AuthController.logoutUser);
+// 5. Logout all
+router.post("/logout-all", authValidator, AuthController.logoutAll);
 
 module.exports = router;
