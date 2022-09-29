@@ -6,6 +6,7 @@ const globalRouter = require("./const/router");
 const cors = require("cors");
 const helmet = require("helmet");
 const cookieParser = require("cookie-parser");
+const errorHandler = require("./middlewares/error.middleware.js");
 
 const PORT = process.env.PORT || 3000;
 const HOST = process.env.HOST || "0.0.0.0";
@@ -18,8 +19,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(helmet());
 app.use(cookieParser());
 app.use("/api", globalRouter);
-
-// MONGO_URI = `mongodb+srv://bboriss:randomPassword@nodeexpressprojects.uclwc.mongodb.net/Oryx?retryWrites=true&w=majority)`;
+app.use(errorHandler);
 
 mongoose.connect(process.env.MONGO_URI, (err) => {
   if (err) return console.log(err);

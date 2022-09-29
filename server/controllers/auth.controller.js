@@ -1,92 +1,87 @@
-const { AuthService } = require("../services/auth.service");
-
+const AuthService = require("../services/auth.service");
 const {
   createAccessToken,
   createRefreshToken,
-  verifyRefreshToken,
-} = require("../const/jwt.const");
+  verifyAccessToken,
+} = require("../const/jwt.const.js");
 
 class AuthController {
-  //Get all users
-  static async getAllUsers(req, res) {
-    try {
-      const users = await AuthService.getAllUsers();
-      res.status(200).send(users);
-    } catch (error) {
-      console.log(error);
-      res.status(400).send(error);
-    }
-  }
-  //Register
+  // 1. Register User
   static async registerUser(req, res) {
     try {
-      const { email, password, firstName, lastName, age } = req.body;
+      const userData = req.body;
 
-      const newUser = await AuthService.registerUser(
-        email,
-        password,
-        firstName,
-        lastName,
-        age
-      );
-      res.status(201).json({ message: "User created" });
+      const user = await AuthService.registerUser(userData);
+
+      res.status(201).send(user);
     } catch (error) {
-      console.log(error);
       res.status(400).send(error);
     }
   }
-  //Login
+  //2. Login user
   static async loginUser(req, res) {
     try {
       const { email, password } = req.body;
 
-      console.log("Inside controller: ", email, password);
       const user = await AuthService.loginUser(email, password);
 
-      const userId = user._doc._id.toString();
+      const token = createAccessToken(user._id);
 
-      //Create and send access token to client
-      const accessToken = createAccessToken(userId);
-      console.log("Access token: ", accessToken);
-      //Create and send refresh token to the client
-      const refreshToken = createRefreshToken(userId);
-      console.log("Refresh token: ", refreshToken);
+      const refreshToken = createRefreshToken(user._id);
 
-      const userWithoutPassword = await AuthService.saveRefreshToken(
-        userId,
-        refreshToken
-      );
+      await AuthService.saveRefreshToken(user, refreshToken);
 
-      res.cookie("refresh-token", refreshToken, {
-        httpOnly: true,
-        secure: false,
-        path: "/refresh-token",
-      });
-      // console.log(req.headers);
-      console.log("req.session: ", req.session);
-      // console.log(req);
-      res.status(201).json(userWithoutPassword, accessToken, refreshToken);
+      res.status(200).send({ ...user.toJSON(), token, refreshToken });
     } catch (error) {
       console.log(error);
-      res.status(401).json({ message: "Login failed" });
+      res.status(401).send(error);
     }
   }
+  // 3. Refresh access token
+  static async refreshAcessToken(req, res) {
+    try {
+      const refreshToken = req.body.refreshToken;
 
+      const user = await AuthService.validateRefreshToken(refreshToken);
+
+      await AuthService.deleteRefreshToken(user, refreshToken);
+
+      const token = createAccessToken(user._id);
+      const newRefreshToken = createRefreshToken(user._id);
+
+      await AuthService.saveRefreshToken(user, newRefreshToken);
+
+      return res.status(200).send({ token, newRefreshToken });
+    } catch (error) {
+      console.log(error);
+      res.sendStatus(403);
+    }
+  }
   // Logout user
   static async logoutUser(req, res) {
     try {
-      console.log(req.params);
-      const userId = req.params.id;
+      const user = req.user;
+
       const refreshToken = req.body.refreshToken;
 
-      console.log("UserId: ", userId);
-      console.log("refreshToken: ", refreshToken);
+      await AuthService.deleteRefreshToken(user, refreshToken);
 
-      await AuthService.deleteRefreshToken(userId, refreshToken);
-
-      res.status(200).json({ message: "User successfully logged out!" });
+      res.sendStatus(204);
     } catch (error) {
-      res.status(400).json(error);
+      console.log(error);
+      res.status(400).send(error);
+    }
+  }
+  // Logout all
+  static async logoutAll(req, res) {
+    try {
+      const user = req.user;
+
+      await AuthService.deleteAllRefreshTokens(user);
+
+      res.sendStatus(204);
+    } catch (error) {
+      res.status(400).send(error);
     }
   }
 }
