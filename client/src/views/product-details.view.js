@@ -7,8 +7,6 @@ const axios = require("axios").default;
 
 export default class ProductDetailsView {
   static async after_render({ request: { id }, data }) {
-    console.log(" after_render");
-
     const products = await data;
 
     // Check existence in Local Storage and take SIZE property

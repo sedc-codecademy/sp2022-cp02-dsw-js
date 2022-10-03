@@ -54,19 +54,20 @@ export default class App {
       (request.resource ? `/${request.resource}` : "/") +
       (request.id ? `/:id` : "") +
       (request.verb ? `/${request.verb}` : "");
-    console.log("REQUEST", request);
-    console.log("parseURL", parseUrl);
+    // console.log("REQUEST", request);
+    // console.log("parseURL", parseUrl);
     const view = routes[parseUrl] ? routes[parseUrl] : Error404View;
     const main = document.getElementById("main-container");
     const options = {
       request: request,
       data: getAllProducts(),
     };
-    console.log("OPTIONS", options);
+    // console.log("OPTIONS", options);
     main.innerHTML = await view.render(options);
     await ProductDetailsView.after_render(options);
     await CartView.after_render(options);
     await ProductsView.after_render(options);
+    await RegisterView.after_render();
   }
   static init() {
     document
@@ -78,7 +79,6 @@ export default class App {
           searchKeyword = Math.random();
         }
         document.location.hash = `/search/${searchKeyword}`;
-        console.log(searchKeyword);
         document.getElementById("q").value = "";
       });
 
@@ -91,6 +91,7 @@ export default class App {
     window.addEventListener("load", this.router);
     window.addEventListener("hashchange", this.router);
     window.addEventListener("scroll", reveal);
+
     navbarCounter();
   }
 }

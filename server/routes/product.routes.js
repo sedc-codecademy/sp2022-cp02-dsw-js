@@ -1,5 +1,6 @@
 const router = require("express").Router();
 const ProductController = require("../controllers/product.controller");
+const authValidator = require("../middlewares/auth.middleware");
 
 //Get all Products
 router.get("/", ProductController.getAllProducts);
