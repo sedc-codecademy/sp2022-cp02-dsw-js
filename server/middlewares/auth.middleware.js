@@ -22,6 +22,7 @@ const authValidator = async (req, res, next) => {
 
     next();
   } catch (err) {
+    console.log(err);
     res.sendStatus(403);
   }
 };

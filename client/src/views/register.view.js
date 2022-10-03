@@ -1,8 +1,36 @@
+const axios = require("axios").default;
+import { setToken, setRefreshToken } from "../local-storage";
+
 export default class RegisterView {
+  static after_render() {
+    const form = document.getElementById("registerForm");
+
+    if (form) {
+      form.addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        const fullName = document.getElementById("fullName").value;
+        const username = document.getElementById("username").value;
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
+
+        axios
+          .post(`http://localhost:3000/api/auth/register`, {
+            fullName: fullName,
+            username: username,
+            email: email,
+            password: password,
+          })
+          .then((res) => setToken(res.data.token));
+      });
+    }
+  }
+
   static render() {
     window.scrollTo({
       top: 0,
     });
+
     return `<section class="h-100 gradient-form mt-5">
     <div class="container py-5 h-100 shadow-lg p-3 mb-5 bg-body rounded">
       <div class="row d-flex justify-content-center align-items-center h-100 ">
@@ -15,12 +43,19 @@ export default class RegisterView {
                   <div class="text-center">
                   <h4 class="mb-4">Create your account</h4>
                   </div>
-                  <form class="form-sign-in">
+                  <form id="registerForm" class="form-sign-in">
                   <div class="form-floating mb-4">
                   <input type="text" id="fullName" class="form-control"
                     placeholder="Phone number or email address" />
                   <label class="form-label" for="fullName">Full Name</label>
                 </div>
+
+                <div class="form-floating mb-4">
+                      <input type="text" id="username" class="form-control"
+                        placeholder="Username" />
+                      <label class="form-label" for="username">Username</label>
+                    </div>
+
 
                     <div class="form-floating mb-4">
                       <input type="email" id="email" class="form-control"
@@ -36,7 +71,7 @@ export default class RegisterView {
                     </div>
   
                     <div class="text-center pt-1 mb-5 pb-1 log-in-button">
-                      <button class="btn btn-block fa-lg mb-3 btn-lg btn btn-outline-dark" type="button">Sign Up</button>
+                      <button class="btn btn-block fa-lg mb-3 btn-lg btn btn-outline-dark" type="submit">Sign Up</button>
                      </div>
   
                     <div class="d-flex align-items-center justify-content-center pb-4 buttons-create-new">

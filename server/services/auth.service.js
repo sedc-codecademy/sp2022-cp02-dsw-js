@@ -52,6 +52,7 @@ class AuthService {
   // Save refresh token
   static async saveRefreshToken(user, refreshToken) {
     try {
+      console.log(user);
       // user.refreshTokens.push(refreshToken);
 
       await user.save();

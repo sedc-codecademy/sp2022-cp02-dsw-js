@@ -9,11 +9,18 @@ class AuthController {
   // 1. Register User
   static async registerUser(req, res) {
     try {
+      console.log(req.body);
       const userData = req.body;
 
       const user = await AuthService.registerUser(userData);
 
-      res.status(201).send(user);
+      const token = createAccessToken(user._id);
+
+      const refreshToken = createRefreshToken(user._id);
+
+      await AuthService.saveRefreshToken(user, refreshToken);
+
+      res.status(201).send({ ...user.toJSON(), token, refreshToken });
     } catch (error) {
       res.status(400).send(error);
     }

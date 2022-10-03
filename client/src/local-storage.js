@@ -7,3 +7,9 @@ export const getCartItems = () => {
 export const setCartItems = (cartItems) => {
   localStorage.setItem("cartItems", JSON.stringify(cartItems));
 };
+export const setToken = (token) => {
+  localStorage.setItem("token", token);
+};
+export const setRefreshToken = (refreshToken) => {
+  localStorage.setItem("refreshToken", refreshToken);
+};

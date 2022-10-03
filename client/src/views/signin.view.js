@@ -20,7 +20,7 @@ export default class SigninView {
                     <div class="form-floating mb-4">
                       <input type="email" id="email" class="form-control"
                         placeholder="Phone number or email address" />
-                      <label class="form-label" for="email">Username</label>
+                      <label class="form-label" for="email">Email</label>
                     </div>
   
                   
