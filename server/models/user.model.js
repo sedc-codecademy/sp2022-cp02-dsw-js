@@ -7,13 +7,14 @@ const { Schema } = mongoose;
 const userSchema = new Schema({
   fullName: {
     type: String,
-    required: true,
-    minlength: 6,
+    required: [true, "Please tell us your name"],
+    minlength: [6, "Your name can not be less than 6 characters long"],
   },
   username: {
     type: String,
-    required: true,
-    minlength: 6,
+    required: [true, "Please tell us your username"],
+    unique: [true, "This username already exists"],
+    minlength: [6, "Username must be at least 6 characters long"],
   },
   email: {
     type: String,
@@ -22,12 +23,18 @@ const userSchema = new Schema({
       validator: (value) => validator.isEmail(value),
       message: (message) => "Invalid Email",
     },
-    unique: true,
+    unique: [true, "This email already exists"],
   },
   password: {
     type: String,
-    required: true,
-    minlength: 8,
+    required: [true, "Please provide password"],
+    minlength: [8, "Password has to be at least 8 characters long"],
+  },
+  role: {
+    type: String,
+    enum: ["admin", "user"],
+    trim: true,
+    default: "user",
   },
 });
 
