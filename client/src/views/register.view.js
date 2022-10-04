@@ -1,27 +1,53 @@
 const axios = require("axios").default;
-import { setToken, setRefreshToken } from "../local-storage";
+import { setToken, setRefreshToken, setUser } from "../local-storage";
 
 export default class RegisterView {
   static after_render() {
     const form = document.getElementById("registerForm");
+    const registerErrorMessage = document.querySelector(
+      ".register__error-message"
+    );
 
     if (form) {
       form.addEventListener("submit", async function (event) {
         event.preventDefault();
 
-        const fullName = document.getElementById("fullName").value;
-        const username = document.getElementById("username").value;
-        const email = document.getElementById("email").value;
-        const password = document.getElementById("password").value;
+        const fullName = document.getElementById("fullName");
+        const username = document.getElementById("username");
+        const email = document.getElementById("email");
+        const password = document.getElementById("password");
 
+        registerErrorMessage.style.display = "none";
         axios
           .post(`http://localhost:3000/api/auth/register`, {
-            fullName: fullName,
-            username: username,
-            email: email,
-            password: password,
+            fullName: fullName.value,
+            username: username.value,
+            email: email.value,
+            password: password.value,
           })
-          .then((res) => setToken(res.data.token));
+          .then((res) => {
+            console.log(res.data);
+            setToken(res.data.token);
+            setRefreshToken(res.data.refreshToken);
+            setUser({
+              fullName: res.data.fullName,
+              username: res.data.username,
+              email: res.data.email,
+            });
+            fullName.value = "";
+            username.value = "";
+            email.value = "";
+            password.value = "";
+            document.location.hash = `/`;
+          })
+          .catch((err) => {
+            console.log(Object.values(err.response.data.errors)[0].message);
+
+            registerErrorMessage.innerText = Object.values(
+              err.response.data.errors
+            )[0].message;
+            registerErrorMessage.style.display = "block";
+          });
       });
     }
   }
@@ -52,27 +78,32 @@ export default class RegisterView {
 
                 <div class="form-floating mb-4">
                       <input type="text" id="username" class="form-control"
-                        placeholder="Username" />
+                        placeholder="Username"  />
                       <label class="form-label" for="username">Username</label>
                     </div>
 
 
                     <div class="form-floating mb-4">
                       <input type="email" id="email" class="form-control"
-                        placeholder="Phone number or email address" />
+                        placeholder="Phone number or email address"  />
                       <label class="form-label" for="email">Email</label>
                     </div>
   
                   
                     <div class="form-floating mb-4">
                     <input type="password" id="password" class="form-control" 
-                        placeholder="Input password" />
+                        placeholder="Input password"  />
                       <label class="form-label" for="password">Password</label>
                     </div>
   
-                    <div class="text-center pt-1 mb-5 pb-1 log-in-button">
-                      <button class="btn btn-block fa-lg mb-3 btn-lg btn btn-outline-dark" type="submit">Sign Up</button>
+                    <div class=" text-center pt-1 mb-3 pb-1 log-in-button">
+                      <button class="btn btn-block fa-lg  btn-lg btn btn-outline-dark" type="submit">Sign Up</button>
                      </div>
+
+                     <div class="register__error-message align-items-center justify-content-center pb-4">
+                      <p class="mb-0 me-2">Please fill out all fields</p>
+                     
+                    </div>
   
                     <div class="d-flex align-items-center justify-content-center pb-4 buttons-create-new">
                       <p class="mb-0 me-2">Already have an account?</p>

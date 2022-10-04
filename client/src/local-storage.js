@@ -13,3 +13,7 @@ export const setToken = (token) => {
 export const setRefreshToken = (refreshToken) => {
   localStorage.setItem("refreshToken", refreshToken);
 };
+
+export const setUser = (userData) => {
+  localStorage.setItem("user", JSON.stringify(userData));
+};
