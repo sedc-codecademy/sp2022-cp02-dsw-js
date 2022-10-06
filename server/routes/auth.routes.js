@@ -9,8 +9,16 @@ router.post("/login", AuthController.loginUser);
 // 3. Refresh access token
 router.post("/refresh-token", AuthController.refreshAcessToken);
 // 4. Logout user
-router.post("/logout", authValidator, AuthController.logoutUser);
+router.post(
+  "/logout",
+  // authValidator,
+  AuthController.logoutUser
+);
 // 5. Logout all
-router.post("/logout-all", authValidator, AuthController.logoutAll);
+router.post(
+  "/logout-all",
+  //  authValidator,
+  AuthController.logoutAll
+);
 
 module.exports = router;

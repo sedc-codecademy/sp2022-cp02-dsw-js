@@ -17,7 +17,7 @@ class AuthService {
   // 2. Login user
   static async loginUser(email, password) {
     try {
-      const user = await User.findOne({ email });
+      let user = await User.findOne({ email }).select("-refreshToken -role");
 
       if (!user) throw "Invalid Credentials";
 
@@ -52,23 +52,20 @@ class AuthService {
   // Save refresh token
   static async saveRefreshToken(user, refreshToken) {
     try {
-      console.log(user);
-      // user.refreshTokens.push(refreshToken);
-
-      await user.save();
+      await User.findOneAndUpdate(
+        { _id: user._id },
+        { $set: { refreshToken: refreshToken } }
+      );
     } catch (error) {
       console.log(error);
       throw error;
     }
   }
   // Delete refresh token
-  static async deleteRefreshToken(user, refreshToken) {
+  static async deleteRefreshToken(Id) {
     try {
-      user.refreshTokens = user.refreshTokens.filter(
-        (token) => token !== refreshToken
-      );
-
-      await user.save();
+      console.log(Id);
+      await User.findOneAndUpdate({ _id: Id }, { $set: { refreshToken: "" } });
     } catch (error) {
       throw error;
     }

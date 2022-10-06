@@ -9,7 +9,7 @@ class AuthController {
   // 1. Register User
   static async registerUser(req, res) {
     try {
-      console.log(req.body);
+      // console.log(req.body);
       const userData = req.body;
 
       const user = await AuthService.registerUser(userData);
@@ -18,9 +18,9 @@ class AuthController {
 
       const refreshToken = createRefreshToken(user._id);
 
-      await AuthService.saveRefreshToken(user, refreshToken);
+      const newUser = await AuthService.saveRefreshToken(user, refreshToken);
 
-      res.status(201).send({ ...user.toJSON(), token, refreshToken });
+      res.status(201).send({ ...user.toJSON(), token });
     } catch (error) {
       console.log(error);
       res.status(400).send(error);
@@ -39,7 +39,7 @@ class AuthController {
 
       await AuthService.saveRefreshToken(user, refreshToken);
 
-      res.status(200).send({ ...user.toJSON(), token, refreshToken });
+      res.status(200).send({ ...user.toJSON() });
     } catch (error) {
       console.log(error);
       res.status(401).send(error);
@@ -68,11 +68,11 @@ class AuthController {
   // Logout user
   static async logoutUser(req, res) {
     try {
-      const user = req.user;
+      const { _id } = req.body;
 
-      const refreshToken = req.body.refreshToken;
+      // const refreshToken = req.body.refreshToken;
 
-      await AuthService.deleteRefreshToken(user, refreshToken);
+      await AuthService.deleteRefreshToken(_id);
 
       res.sendStatus(204);
     } catch (error) {
@@ -83,7 +83,7 @@ class AuthController {
   // Logout all
   static async logoutAll(req, res) {
     try {
-      const user = req.user;
+      const user = req.body;
 
       await AuthService.deleteAllRefreshTokens(user);
 
