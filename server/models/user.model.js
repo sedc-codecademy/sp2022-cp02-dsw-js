@@ -36,6 +36,19 @@ const userSchema = new Schema({
     trim: true,
     default: "user",
   },
+  orders: {
+    type: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Order",
+      },
+    ],
+    default: [],
+  },
+  refreshToken: {
+    type: String,
+    default: "",
+  },
 });
 
 userSchema.methods.comparePasswords = async function (loginPassword) {

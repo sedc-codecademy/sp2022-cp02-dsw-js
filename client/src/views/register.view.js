@@ -1,5 +1,5 @@
 const axios = require("axios").default;
-import { setToken, setRefreshToken, setUser } from "../local-storage";
+import { setToken, setUser } from "../local-storage";
 
 export default class RegisterView {
   static after_render() {
@@ -28,7 +28,6 @@ export default class RegisterView {
           .then((res) => {
             console.log(res.data);
             setToken(res.data.token);
-            setRefreshToken(res.data.refreshToken);
             setUser({
               fullName: res.data.fullName,
               username: res.data.username,

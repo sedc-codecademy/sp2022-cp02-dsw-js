@@ -42,6 +42,11 @@ body {
   color: var(--cultured);
   background: var(--jazzberry-jam);
 }
+
+.signInLogo :hover {
+  color: var(--jazzberry-jam);
+}
+
 img,
 picture,
 video,

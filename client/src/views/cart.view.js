@@ -1,5 +1,6 @@
 import CartItem from "../components/cart-item.component";
 import { getCartItems } from "../local-storage";
+import { setOrderInfo } from "../session-storage";
 import {
   deleteCartItem,
   counterPlus,
@@ -15,11 +16,20 @@ export default class CartView {
     counterMinus(CartView);
     shippingPrice();
     deleteCartItem(CartView);
+
+    const selectShippingOption = document.querySelector(".shipping-options");
+    if (selectShippingOption) {
+      selectShippingOption.addEventListener("change", (e) => {
+        let shippingOption = e.target.value;
+        setOrderInfo(shippingOption);
+      });
+    }
   }
   static async render() {
     // window.scrollTo({
     //   top: 0,
     // });
+
     const cartItems = getCartItems();
     const filteredPrice = cartItems.map((x) => {
       if (x.discountPrice == null) {

@@ -82,6 +82,13 @@ export default class App {
         document.getElementById("q").value = "";
       });
 
+    if (localStorage.getItem("user")) {
+      document
+        .querySelector(".signInLogo")
+        .classList.remove("bi-person-circle");
+
+      document.querySelector(".signInLogo").innerHTML = "<span>Logout</span>";
+    }
     document.querySelector(".footer-links").addEventListener("click", (e) => {
       if (e.target.tagName === "A") {
         window.scrollTo(0, 0);
