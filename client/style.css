@@ -47,6 +47,10 @@ body {
   color: var(--jazzberry-jam);
 }
 
+.user_name :hover {
+  color: var(--jazzberry-jam);
+}
+
 img,
 picture,
 video,

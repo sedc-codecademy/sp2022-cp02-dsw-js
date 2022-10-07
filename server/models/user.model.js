@@ -72,13 +72,13 @@ userSchema.pre("save", async function (next) {
   return next();
 });
 
-userSchema.post("save", (error, _doc, next) => {
-  if (error.code === 11000) {
-    return next({ message: "Email Already Exists" });
-  }
+// userSchema.post("save", (error, _doc, next) => {
+//   if (error.code === 11000) {
+//     return next({ message: "Email Already Exists" });
+//   }
 
-  return next();
-});
+//   return next();
+// });
 
 userSchema.set("toJSON", {
   transform: function (_doc, ret, _opt) {
