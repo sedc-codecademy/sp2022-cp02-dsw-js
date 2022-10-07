@@ -22,6 +22,8 @@ import RegisterView from "./views/register.view.js";
 import ErrorView from "./views/error.view.js";
 import TeamView from "./views/team.view.js";
 import TermsAndConditions from "./views/terms-and-conditions.view.js";
+import axios from "axios";
+
 const routes = {
   "/": HomepageView,
   "/search/:id": SearchFilteredProductsView,
@@ -62,6 +64,78 @@ export default class App {
       request: request,
       data: getAllProducts(),
     };
+
+    // Show user and logout when loggedin and registered
+
+    // IF NOT LOGGED IN
+    if (!JSON.parse(localStorage.getItem("user"))) {
+      document.querySelector(".notLoggedUser").addEventListener("click", () => {
+        document.location.hash = `/signin`;
+      });
+    }
+
+    // IF USER LOGGEDIN
+
+    if (JSON.parse(localStorage.getItem("user"))) {
+      document
+        .querySelector(".signInLogo")
+        .classList.remove("bi-person-circle", "notLoggedUser");
+      if (document.querySelector(".signInLogo")) {
+        document.querySelector(
+          ".signInLogo"
+        ).innerHTML = `<span class="user_name">${
+          JSON.parse(localStorage.getItem("user")).username
+        }</span>`;
+      }
+
+      document
+        .querySelector(".signInLogo")
+        .addEventListener("mouseenter", (e) => {
+          if (localStorage.getItem("user")) {
+            document.querySelector(
+              ".signInLogo"
+            ).innerHTML = `<span class="logout_button">Logout</span>`;
+          }
+
+          if (document.querySelector(".logout_button")) {
+            document
+              .querySelector(".logout_button")
+              .addEventListener("click", () => {
+                console.log(JSON.parse(localStorage.getItem("user")).id);
+                axios
+                  .post(`http://localhost:3000/api/auth/logout`, {
+                    _id: JSON.parse(localStorage.getItem("user")).id,
+                  })
+                  .then(() => {
+                    localStorage.removeItem("user");
+                    localStorage.removeItem("token");
+                    document
+                      .querySelector(".signInLogo")
+                      .classList.add("bi-person-circle", "notLoggedUser");
+                    document.querySelector(".signInLogo").innerHTML = ``;
+
+                    document.location.hash = `/`;
+                  })
+                  .catch((err) => {
+                    console.log(err);
+                  });
+              });
+          }
+        });
+
+      if (localStorage.getItem("user")) {
+        document
+          .querySelector(".signInLogo")
+          .addEventListener("mouseleave", (e) => {
+            document.querySelector(
+              ".signInLogo"
+            ).innerHTML = `<span class="user_name">${
+              JSON.parse(localStorage.getItem("user")).username
+            }</span>`;
+          });
+      }
+    }
+
     // console.log("OPTIONS", options);
     main.innerHTML = await view.render(options);
     await ProductDetailsView.after_render(options);
@@ -70,6 +144,7 @@ export default class App {
     await RegisterView.after_render();
   }
   static init() {
+    const axios = require("axios").default;
     document
       .getElementById("search-bar")
       .addEventListener("submit", async (e) => {
@@ -82,13 +157,6 @@ export default class App {
         document.getElementById("q").value = "";
       });
 
-    if (localStorage.getItem("user")) {
-      document
-        .querySelector(".signInLogo")
-        .classList.remove("bi-person-circle");
-
-      document.querySelector(".signInLogo").innerHTML = "<span>Logout</span>";
-    }
     document.querySelector(".footer-links").addEventListener("click", (e) => {
       if (e.target.tagName === "A") {
         window.scrollTo(0, 0);

@@ -32,6 +32,7 @@ export default class RegisterView {
               fullName: res.data.fullName,
               username: res.data.username,
               email: res.data.email,
+              id: res.data._id,
             });
             fullName.value = "";
             username.value = "";
@@ -40,12 +41,24 @@ export default class RegisterView {
             document.location.hash = `/`;
           })
           .catch((err) => {
-            console.log(Object.values(err.response.data.errors)[0].message);
-
-            registerErrorMessage.innerText = Object.values(
-              err.response.data.errors
-            )[0].message;
-            registerErrorMessage.style.display = "block";
+            console.log(err);
+            if (
+              err.response.data.errors &&
+              Object.values(err.response.data.errors)[0].message
+            ) {
+              console.log(Object.values(err.response.data.errors)[0].message);
+              registerErrorMessage.innerText = Object.values(
+                err.response.data.errors
+              )[0].message;
+              registerErrorMessage.style.display = "block";
+            } else if (err.response.data.keyValue["email"]) {
+              registerErrorMessage.innerText =
+                "This e-mail address already exists";
+              registerErrorMessage.style.display = "block";
+            } else if (err.response.data.keyValue["username"]) {
+              registerErrorMessage.innerText = "This username already exists";
+              registerErrorMessage.style.display = "block";
+            }
           });
       });
     }
