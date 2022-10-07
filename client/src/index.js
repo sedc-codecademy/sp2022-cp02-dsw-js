@@ -81,11 +81,7 @@ export default class App {
     // IF USER LOGGEDIN
 
     // show username if loggedin
-    console.log(document.querySelector(".signInLogo").classList);
-    if (
-      JSON.parse(localStorage.getItem("user")) &&
-      document.querySelector(".signInLogo").classList.contains("notLoggedUser")
-    ) {
+    if (JSON.parse(localStorage.getItem("user"))) {
       document
         .querySelector(".signInLogo")
         .classList.remove("bi-person-circle", "notLoggedUser");
@@ -98,12 +94,7 @@ export default class App {
       }
 
       // mouseleave show username
-      if (
-        localStorage.getItem("user") &&
-        document
-          .querySelector(".signInLogo")
-          .classList.contains("notLoggedUser")
-      ) {
+      if (localStorage.getItem("user")) {
         document
           .querySelector(".signInLogo")
           .addEventListener("mouseleave", (e) => {
