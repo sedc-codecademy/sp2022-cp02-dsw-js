@@ -114,7 +114,7 @@ export default class RegisterView {
 
                      <div class="register__error-message align-items-center justify-content-center pb-4">
                       <p class="mb-0 me-2">Please fill out all fields</p>
-                     
+                      
                     </div>
   
                     <div class="d-flex align-items-center justify-content-center pb-4 buttons-create-new">

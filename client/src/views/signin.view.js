@@ -1,4 +1,60 @@
+const axios = require("axios").default;
+import { setToken, setUser } from "../local-storage";
+
 export default class SigninView {
+  static after_render() {
+    const loginForm = document.getElementById("loginForm");
+    const loginErrorMessage = document.querySelector(".login__error-message");
+    if (loginForm) {
+      loginForm.addEventListener("submit", async function (event) {
+        event.preventDefault();
+        console.log("ulazi li");
+        const emailLogin = document.getElementById("emailLogin");
+        const passwordLogin = document.getElementById("passwordLogin");
+
+        loginErrorMessage.style.display = "none";
+        axios
+          .post(`http://localhost:3000/api/auth/login`, {
+            email: emailLogin.value,
+            password: passwordLogin.value,
+          })
+          .then((res) => {
+            console.log(res.data);
+            setToken(res.data.token);
+            setUser({
+              fullName: res.data.fullName,
+              username: res.data.username,
+              email: res.data.email,
+              id: res.data._id,
+            });
+            emailLogin.value = "";
+            passwordLogin.value = "";
+            document.location.hash = `/`;
+          })
+          .catch((err) => {
+            console.log(err);
+            // if (
+            //   err.response.data.errors &&
+            //   Object.values(err.response.data.errors)[0].message
+            // ) {
+            //   console.log(Object.values(err.response.data.errors)[0].message);
+            //   registerErrorMessage.innerText = Object.values(
+            //     err.response.data.errors
+            //   )[0].message;
+            //   registerErrorMessage.style.display = "block";
+            // } else if (err.response.data.keyValue["email"]) {
+            //   registerErrorMessage.innerText =
+            //     "This e-mail address already exists";
+            //   registerErrorMessage.style.display = "block";
+            // } else if (err.response.data.keyValue["username"]) {
+            //   registerErrorMessage.innerText = "This username already exists";
+            //   registerErrorMessage.style.display = "block";
+            // }
+          });
+      });
+    }
+  }
+
   static render() {
     window.scrollTo({
       top: 0,
@@ -15,24 +71,27 @@ export default class SigninView {
                   <div class="text-center">
                   <h4 class="mb-4">Please login to your account</h4>
                   </div>
-                  <form class="form-sign-in">
+                  <form id="loginForm" class="form-sign-in">
   
                     <div class="form-floating mb-4">
-                      <input type="email" id="email" class="form-control"
+                      <input type="email" id="emailLogin" class="form-control"
                         placeholder="Phone number or email address" />
-                      <label class="form-label" for="email">Email</label>
+                      <label class="form-label" for="emailLogin">Email</label>
                     </div>
   
                   
                     <div class="form-floating mb-4">
-                    <input type="password" id="password" class="form-control" 
+                    <input type="password" id="passwordLogin" class="form-control" 
                         placeholder="Input password" />
-                      <label class="form-label" for="password">Password</label>
+                      <label class="form-label" for="passwordLogin">Password</label>
                     </div>
   
                     <div class="text-center pt-1 mb-5 pb-1 log-in-button">
-                      <button class="btn btn-block fa-lg mb-3 btn-lg btn btn-outline-dark" type="button">Log
-                        in</button>
+                      <button class="btn btn-block fa-lg mb-3 btn-lg btn btn-outline-dark" type="submit">
+                      Log in</button>
+                        <div class="login__error-message align-items-center justify-content-center pb-4">
+                      <p class="mb-0 me-2">Please fill out all fields</p>
+                    </div>
                       <a class="text-muted" href="#!">Forgot password?</a>
                     </div>
   

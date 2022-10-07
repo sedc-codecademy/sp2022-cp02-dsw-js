@@ -68,7 +68,11 @@ export default class App {
     // Show user and logout when loggedin and registered
 
     // IF NOT LOGGED IN
-    if (!JSON.parse(localStorage.getItem("user"))) {
+
+    if (
+      !JSON.parse(localStorage.getItem("user")) &&
+      document.querySelector(".signInLogo").classList.contains("notLoggedUser")
+    ) {
       document.querySelector(".notLoggedUser").addEventListener("click", () => {
         document.location.hash = `/signin`;
       });
@@ -76,7 +80,12 @@ export default class App {
 
     // IF USER LOGGEDIN
 
-    if (JSON.parse(localStorage.getItem("user"))) {
+    // show username if loggedin
+    console.log(document.querySelector(".signInLogo").classList);
+    if (
+      JSON.parse(localStorage.getItem("user")) &&
+      document.querySelector(".signInLogo").classList.contains("notLoggedUser")
+    ) {
       document
         .querySelector(".signInLogo")
         .classList.remove("bi-person-circle", "notLoggedUser");
@@ -88,6 +97,27 @@ export default class App {
         }</span>`;
       }
 
+      // mouseleave show username
+      if (
+        localStorage.getItem("user") &&
+        document
+          .querySelector(".signInLogo")
+          .classList.contains("notLoggedUser")
+      ) {
+        document
+          .querySelector(".signInLogo")
+          .addEventListener("mouseleave", (e) => {
+            if (document.querySelector(".signInLogo")) {
+              document.querySelector(
+                ".signInLogo"
+              ).innerHTML = `<span class="user_name">${
+                JSON.parse(localStorage.getItem("user")).username
+              }</span>`;
+            }
+          });
+      }
+
+      // show logout when hovered
       document
         .querySelector(".signInLogo")
         .addEventListener("mouseenter", (e) => {
@@ -122,18 +152,6 @@ export default class App {
               });
           }
         });
-
-      if (localStorage.getItem("user")) {
-        document
-          .querySelector(".signInLogo")
-          .addEventListener("mouseleave", (e) => {
-            document.querySelector(
-              ".signInLogo"
-            ).innerHTML = `<span class="user_name">${
-              JSON.parse(localStorage.getItem("user")).username
-            }</span>`;
-          });
-      }
     }
 
     // console.log("OPTIONS", options);
@@ -141,6 +159,7 @@ export default class App {
     await ProductDetailsView.after_render(options);
     await CartView.after_render(options);
     await ProductsView.after_render(options);
+    await SigninView.after_render();
     await RegisterView.after_render();
   }
   static init() {
