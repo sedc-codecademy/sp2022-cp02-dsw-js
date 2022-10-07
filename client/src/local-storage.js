@@ -10,10 +10,14 @@ export const setCartItems = (cartItems) => {
 export const setToken = (token) => {
   localStorage.setItem("token", token);
 };
-export const setRefreshToken = (refreshToken) => {
-  localStorage.setItem("refreshToken", refreshToken);
-};
 
 export const setUser = (userData) => {
   localStorage.setItem("user", JSON.stringify(userData));
 };
+
+// export const getUser = () => {
+//   const user = localStorage.getItem("user")
+//     ? JSON.parse(localStorage.getItem("cartItems"))
+//     : [];
+//   return cartItems;
+// }

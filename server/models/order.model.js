@@ -4,6 +4,7 @@ const { Schema } = mongoose;
 const orderSchema = new Schema({
   userId: {
     type: String,
+    ref: "User",
   },
   items: [
     {
@@ -22,6 +23,11 @@ const orderSchema = new Schema({
   bill: {
     type: Number,
     required: true,
+  },
+  shippingType: {
+    type: String,
+    enum: ["Standard", "Express"],
+    default: "Standard",
   },
   date_added: {
     type: Date,
