@@ -17,6 +17,9 @@ class AuthService {
   // 2. Login user
   static async loginUser(email, password) {
     try {
+      if (!email) throw "Fill out your email";
+      if (!password) throw "Fill out your password";
+
       let user = await User.findOne({ email }).select("-refreshToken -role");
 
       if (!user) throw "Invalid Credentials";

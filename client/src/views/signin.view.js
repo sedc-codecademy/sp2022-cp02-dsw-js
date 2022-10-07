@@ -33,23 +33,11 @@ export default class SigninView {
           })
           .catch((err) => {
             console.log(err);
-            // if (
-            //   err.response.data.errors &&
-            //   Object.values(err.response.data.errors)[0].message
-            // ) {
-            //   console.log(Object.values(err.response.data.errors)[0].message);
-            //   registerErrorMessage.innerText = Object.values(
-            //     err.response.data.errors
-            //   )[0].message;
-            //   registerErrorMessage.style.display = "block";
-            // } else if (err.response.data.keyValue["email"]) {
-            //   registerErrorMessage.innerText =
-            //     "This e-mail address already exists";
-            //   registerErrorMessage.style.display = "block";
-            // } else if (err.response.data.keyValue["username"]) {
-            //   registerErrorMessage.innerText = "This username already exists";
-            //   registerErrorMessage.style.display = "block";
-            // }
+            if (err.response.data) {
+              loginErrorMessage.innerText = err.response.data;
+
+              loginErrorMessage.style.display = "block";
+            }
           });
       });
     }
