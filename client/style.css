@@ -188,6 +188,12 @@ h6 {
   align-items: center;
   --bs-btn-border-width: none;
 }
+#login_span {
+  display: block;
+}
+.logout_span {
+  display: none;
+}
 #right-side-second a:first-child {
   --bs-btn-border-width: none;
   width: auto;
