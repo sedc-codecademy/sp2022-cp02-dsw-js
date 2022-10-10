@@ -39,7 +39,7 @@ class AuthController {
 
       await AuthService.saveRefreshToken(user, refreshToken);
 
-      res.status(200).send({ ...user.toJSON() });
+      res.status(200).send({ ...user.toJSON(), token });
     } catch (error) {
       console.log(error);
       res.status(401).send(error);

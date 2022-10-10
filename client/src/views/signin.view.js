@@ -8,7 +8,6 @@ export default class SigninView {
     if (loginForm) {
       loginForm.addEventListener("submit", async function (event) {
         event.preventDefault();
-        console.log("ulazi li");
         const emailLogin = document.getElementById("emailLogin");
         const passwordLogin = document.getElementById("passwordLogin");
 
@@ -19,7 +18,6 @@ export default class SigninView {
             password: passwordLogin.value,
           })
           .then((res) => {
-            console.log(res.data);
             setToken(res.data.token);
             setUser({
               fullName: res.data.fullName,
