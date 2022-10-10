@@ -2,8 +2,12 @@ const Product = require("../models/product.model");
 
 class ProductService {
   //Get all products
-  static async getAllProducts() {
-    const products = await Product.find({});
+  static async getAllProducts(req) {
+    let filter = {};
+    if (req.query.categories) {
+      filter = { category: req.query.categories.split(",") };
+    }
+    const products = await Product.find(filter).populate("category");
     return products;
   }
   //Get product by id
@@ -49,6 +53,18 @@ class ProductService {
   //Delete product
   static async deleteProduct(productId) {
     await Product.findByIdAndDelete(productId);
+  }
+
+  // CATEGORIES DATA
+
+  //Get shirts
+  static async getCategorie() {
+    let filter = {};
+    if (req.query.categories) {
+      filter = { category: req.query.categories.split(",") };
+    }
+    const products = await Product.find({ category: "shirts" });
+    return products;
   }
 }
 

@@ -1,11 +1,12 @@
 const verifyRefreshToken = require("../const/jwt.const");
 const User = require("../models/user.model");
+const { Types } = require("mongoose");
 
 class AuthService {
   // 1. Register user
   static async registerUser(userData) {
     try {
-      const user = new User(userData);
+      const user = new User({ _id: new Types.ObjectId(), ...userData });
 
       const createdUser = await user.save();
 
@@ -26,7 +27,7 @@ class AuthService {
 
       const isPasswordValid = await user.comparePasswords(password);
 
-      if (!isPasswordValid) throw "Invalid Credentails";
+      if (!isPasswordValid) throw "Password is not correct, please try again";
 
       return user;
     } catch (error) {

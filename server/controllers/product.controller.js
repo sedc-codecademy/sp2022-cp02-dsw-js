@@ -5,7 +5,7 @@ class ProductController {
   //Get all products
   static async getAllProducts(req, res) {
     try {
-      const products = await ProductService.getAllProducts();
+      const products = await ProductService.getAllProducts(req);
       res.status(200).send(products);
     } catch (error) {
       console.log(error);

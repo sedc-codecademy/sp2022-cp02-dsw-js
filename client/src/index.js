@@ -95,17 +95,19 @@ export default class App {
 
       // mouseleave show username
       if (localStorage.getItem("user")) {
-        document
-          .querySelector(".signInLogo")
-          .addEventListener("mouseleave", (e) => {
-            if (document.querySelector(".signInLogo")) {
-              document.querySelector(
-                ".signInLogo"
-              ).innerHTML = `<span class="user_name">${
-                JSON.parse(localStorage.getItem("user")).username
-              }</span>`;
-            }
-          });
+        if (document.querySelector(".signInLogo")) {
+          document
+            .querySelector(".signInLogo")
+            .addEventListener("mouseleave", (e) => {
+              if (document.querySelector(".signInLogo")) {
+                document.querySelector(
+                  ".signInLogo"
+                ).innerHTML = `<span class="user_name">${
+                  JSON.parse(localStorage.getItem("user")).username
+                }</span>`;
+              }
+            });
+        }
       }
 
       // show logout when hovered
@@ -122,11 +124,21 @@ export default class App {
             document
               .querySelector(".logout_button")
               .addEventListener("click", () => {
-                console.log(JSON.parse(localStorage.getItem("user")).id);
+                console.log("ovo mi treba ", localStorage.getItem("token"));
                 axios
-                  .post(`http://localhost:3000/api/auth/logout`, {
-                    _id: JSON.parse(localStorage.getItem("user")).id,
-                  })
+                  .post(
+                    `http://localhost:3000/api/auth/logout`,
+                    {
+                      _id: JSON.parse(localStorage.getItem("user")).id,
+                    },
+                    {
+                      headers: {
+                        authorization: `Bearer ${localStorage.getItem(
+                          "token"
+                        )}`,
+                      },
+                    }
+                  )
                   .then(() => {
                     localStorage.removeItem("user");
                     localStorage.removeItem("token");
@@ -135,7 +147,7 @@ export default class App {
                       .classList.add("bi-person-circle", "notLoggedUser");
                     document.querySelector(".signInLogo").innerHTML = ``;
 
-                    document.location.hash = `/`;
+                    // document.location.hash = `/`;
                   })
                   .catch((err) => {
                     console.log(err);

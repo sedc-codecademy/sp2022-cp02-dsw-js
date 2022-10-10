@@ -177,6 +177,7 @@ h6 {
   flex: max(280px, 100%/5 - 20px);
   height: 8.5vh;
   width: 0px;
+  min-width: 445px;
   justify-content: center;
   flex-direction: column;
 }

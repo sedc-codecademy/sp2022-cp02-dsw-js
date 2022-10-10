@@ -1,4 +1,77 @@
 export default class OrderView {
+  static after_render() {
+    const orderForm = document.getElementById("orderForm");
+    const orderErrorMessage = document.querySelector(".order__error-message");
+
+    // from local storage
+    const items = JSON.parse(localStorage.getItem("cartItems"));
+    const userId = JSON.parse(localStorage.getItem("user").id);
+
+    const fullName = document.getElementById("orderName");
+    const email = document.getElementById("orderEmail");
+    const phone = document.getElementById("orderPhone");
+    const address = document.getElementById("orderAddress");
+    const bill = document.getElementById("bill");
+    const shippingType = document.getElementById("shippingType");
+    let deliveryDay = Array.from(
+      document.getElementsByName("deliveryOptions")
+    ).find((r) => r.checked).value;
+
+    if (localStorage.getItem("user")) {
+      fullName.value = JSON.parse(localStorage.getItem("user").fullName);
+      email.value = JSON.parse(localStorage.getItem("user").email);
+    }
+
+    if (orderForm) {
+      orderForm.addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        orderErrorMessage.style.display = "none";
+        axios
+          .post(`http://localhost:3000/api/order`, {
+            userId: userId,
+            name: fullName.value,
+            email: email.value,
+            phone: phone.value,
+            address: address.value,
+            items: items,
+            bill: bill,
+            dayOfDelivery: deliveryOptions,
+            shippingType: shippingType,
+          })
+          .then((res) => {
+            console.log(res.data);
+
+            fullName.value = "";
+            email.value = "";
+            phone.value = "";
+            address.value = "";
+            document.location.hash = `/`;
+          })
+          .catch((err) => {
+            console.log(err);
+            // if (
+            //   err.response.data.errors &&
+            //   Object.values(err.response.data.errors)[0].message
+            // ) {
+            //   console.log(Object.values(err.response.data.errors)[0].message);
+            //   registerErrorMessage.innerText = Object.values(
+            //     err.response.data.errors
+            //   )[0].message;
+            //   registerErrorMessage.style.display = "block";
+            // } else if (err.response.data.keyValue["email"]) {
+            //   registerErrorMessage.innerText =
+            //     "This e-mail address already exists";
+            //   registerErrorMessage.style.display = "block";
+            // } else if (err.response.data.keyValue["username"]) {
+            //   registerErrorMessage.innerText = "This username already exists";
+            //   registerErrorMessage.style.display = "block";
+            // }
+          });
+      });
+    }
+  }
+
   static render() {
     window.scrollTo({
       top: 0,
@@ -17,45 +90,45 @@ export default class OrderView {
                   
                   <h4 class="mb-4">Make An Order</h4>
                 
-                      <form>
+                      <form id="orderForm">
                       <div class="row">
                         <div class="col-md-6">
                         <div class="form-floating mb-4">
-                            <input type="text" id="contactBlockName1" class="form-control" placeholder="Enter Name" />
-                            <label class="form-label" for="contactBlockName1">Name</label>
+                            <input type="text" id="orderName" class="form-control" placeholder="Enter Name" />
+                            <label class="form-label" for="orderName">Name</label>
                           </div>
                         </div>
                         <div class="col-md-6">
                         <div class="form-floating mb-4">
-                            <input type="email" id="contactBlockEmail2" class="form-control" placeholder="Enter Email" />
-                            <label class="form-label" for="contactBlockEmail2">Email</label>
+                            <input type="email" id="orderEmail" class="form-control" placeholder="Enter Email" />
+                            <label class="form-label" for="orderEmail">Email</label>
                           </div>
                         </div>
                       </div>
                       <div class="form-floating mb-4">
-                        <input type="tel" id="contactBlockPhone3" class="form-control" placeholder="Enter Phone Number"" />
-                        <label class="form-label" for="contactBlockPhone3">Phone</label>
+                        <input type="tel" id="orderPhone" class="form-control" placeholder="Enter Phone Number"" />
+                        <label class="form-label" for="orderPhone">Phone</label>
                       </div>
                       <div class="form-floating mb-4">
-                      <input type="text" id="address" name="address" class="form-control" placeholder="Address" />
-                      <label class="form-label" for="address">Address</label>   
+                      <input type="text" id="orderAddress" name="address" class="form-control" placeholder="Address" />
+                      <label class="form-label" for="orderAddress">Address</label>   
                       </div>
                       <p>Preferred day of delivery</p>
                           <div class='delivery-day btn-group'>
-                            <input type="radio" class="btn-check" name="options" id="monday" autocomplete="off"  />
+                            <input type="radio" class="btn-check" name="deliveryOptions" id="monday" autocomplete="off"  />
                             <label class="btn btn-outline-light btn-secondary btn-create-new" for="monday">Monday</label>
                           
-                            <input type="radio" class="btn-check" name="options" id="tuesday" autocomplete="off" />
+                            <input type="radio" class="btn-check" name="deliveryOptions" id="tuesday" autocomplete="off" />
                             <label class="btn btn-outline-light btn-secondary btn-create-new" for="tuesday">Tuesday</label>
                           
-                            <input type="radio" class="btn-check" name="options" id="wednesday" autocomplete="off" />
+                            <input type="radio" class="btn-check" name="deliveryOptions" id="wednesday" autocomplete="off" />
                             <label class="btn btn-outline-light btn-secondary btn-create-new" for="wednesday">Wednesday</label>
-                            <input type="radio" class="btn-check" name="options" id="thursday" autocomplete="off" />
+                            <input type="radio" class="btn-check" name="deliveryOptions" id="thursday" autocomplete="off" />
                             <label class="btn btn-outline-light btn-secondary btn-create-new" for="thursday">Thursday</label>       
-                            <input type="radio" class="btn-check" name="options" id="friday" autocomplete="off" />
+                            <input type="radio" class="btn-check" name="deliveryOptions" id="friday" autocomplete="off" />
                             <label class="btn btn-outline-light btn-secondary btn-create-new" for="friday">Friday</label> 
 
-                            <input type="radio" class="btn-check" name="options" id="saturday" autocomplete="off" />
+                            <input type="radio" class="btn-check" name="deliveryOptions" id="saturday" autocomplete="off" />
                             <label class="btn btn-outline-light btn-secondary btn-create-new" for="saturday">Saturday</label>       
                             </div>
                       <button type="button" class="btn btn-outline-light btn-dark btn-lg btn-create-new">Submit</button>
