@@ -1,5 +1,5 @@
 import CartItem from "../components/cart-item.component";
-import { getCartItems } from "../local-storage";
+import { getCartItems, setBill } from "../local-storage";
 import { setOrderInfo } from "../session-storage";
 import {
   deleteCartItem,
@@ -77,7 +77,7 @@ export default class CartView {
                 .reduce((a, c) => a + c, 0)
                 .toFixed(2)}</div>
             </div>
-            <form class="cart__summary__form">
+            <form id="shipping" class="cart__summary__form">
               <p>SHIPPING*</p>
               <select class="shipping-options" required>
                 <option value="" disabled selected>Delivery</option>

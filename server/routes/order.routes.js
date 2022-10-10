@@ -1,16 +1,16 @@
 const router = require("express").Router();
 const OrderController = require("../controllers/order.controller");
-const authValidator = require("../middlewares/auth.middleware");
+const { authValidator, restrictTo } = require("../middlewares/auth.middleware");
 
-//Get all Products
-router.get("/", OrderController.getAllOrders);
-//Get product by id
+//Get all Orders
+router.get("/", restrictTo("admin"), OrderController.getAllOrders);
+//Get order by id
 router.get("/:id", OrderController.getOrderById);
-//Create new product
+//Create new order
 router.post("/", OrderController.createOrder);
-//Update product
-router.patch("/:id", OrderController.updateOrder);
-//Delete product
-router.delete("/:id", OrderController.deleteOrder);
+//Update order
+router.patch("/:id", restrictTo("admin"), OrderController.updateOrder);
+//Delete order
+router.delete("/:id", restrictTo("admin"), OrderController.deleteOrder);
 
 module.exports = router;

@@ -32,6 +32,7 @@ class OrderController {
   static async createOrder(req, res) {
     try {
       const orderData = req.body;
+      console.log(orderData);
       const createdOrder = await OrderService.createOrder(orderData).then(
         async (newOrder) => {
           await User.findByIdAndUpdate(newOrder.userId, {
