@@ -1,4 +1,5 @@
-import { getCartItems, setCartItems } from "../local-storage";
+import { getCartItems, setCartItems, setBill } from "../local-storage";
+import {} from "../session-storage";
 const axios = require("axios").default;
 
 export const parseRequestUrl = () => {
@@ -90,7 +91,7 @@ export const counterPlus = (view) => {
           document.getElementById(`counter${id}`).innerHTML
         );
         const cartItems = getCartItems();
-        console.log(cartItems);
+
         if (cartItems.length > 0) {
           const indexOfUpdate = cartItems.findIndex(
             (cartItem) => cartItem._id === id
@@ -206,6 +207,7 @@ export const shippingPrice = () => {
       document.querySelector(
         ".total-order-price"
       ).innerHTML = `$${updatedPrice}`;
+      setBill(updatedPrice);
     });
   }
 };

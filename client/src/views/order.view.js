@@ -1,32 +1,71 @@
+const axios = require("axios").default;
+import {
+  getOrderInfo,
+  setOrderInfo,
+  setDeliveryDay,
+  getDeliveryDay,
+} from "../session-storage";
+
+import { clearCartItems } from "../local-storage";
+
 export default class OrderView {
   static after_render() {
     const orderForm = document.getElementById("orderForm");
     const orderErrorMessage = document.querySelector(".order__error-message");
 
-    // from local storage
-    const items = JSON.parse(localStorage.getItem("cartItems"));
-    const userId = JSON.parse(localStorage.getItem("user").id);
-
-    const fullName = document.getElementById("orderName");
-    const email = document.getElementById("orderEmail");
-    const phone = document.getElementById("orderPhone");
-    const address = document.getElementById("orderAddress");
-    const bill = document.getElementById("bill");
-    const shippingType = document.getElementById("shippingType");
-    let deliveryDay = Array.from(
-      document.getElementsByName("deliveryOptions")
-    ).find((r) => r.checked).value;
-
-    if (localStorage.getItem("user")) {
-      fullName.value = JSON.parse(localStorage.getItem("user").fullName);
-      email.value = JSON.parse(localStorage.getItem("user").email);
-    }
-
     if (orderForm) {
-      orderForm.addEventListener("submit", async function (event) {
-        event.preventDefault();
+      const fullName = document.getElementById("orderName");
+      const email = document.getElementById("orderEmail");
+      const phone = document.getElementById("orderPhone");
+      const address = document.getElementById("orderAddress");
 
-        orderErrorMessage.style.display = "none";
+      let userId;
+
+      // from local storage
+      const items = JSON.parse(localStorage.getItem("cartItems"));
+      const bill = JSON.parse(localStorage.getItem("bill"));
+      const shippingType = getOrderInfo();
+
+      //
+      if (localStorage.getItem("user")) {
+        userId = JSON.parse(localStorage.getItem("user")).id;
+        fullName.value = JSON.parse(localStorage.getItem("user")).fullName;
+        email.value = JSON.parse(localStorage.getItem("user")).email;
+      }
+      orderForm.addEventListener("submit", async function (event) {
+        // selecting delivery day
+        let deliveryDay;
+        let ele = document.getElementsByName("deliveryOptions");
+        for (let i = 0; i < ele.length; i++) {
+          console.log("ulazi li ovde uopste");
+          if (ele[i].checked) {
+            console.log(ele[i].value);
+            deliveryDay = ele[i].value;
+          }
+        }
+        event.preventDefault();
+        console.log(
+          "userId",
+          userId,
+          "name",
+          fullName.value,
+          "email",
+          email.value,
+          "phone",
+          phone.value,
+          "address",
+          address.value,
+          "items",
+          items,
+          "bill",
+          bill,
+          "dayOfDelivery",
+          deliveryDay,
+          "shippingType",
+          shippingType
+        );
+
+        // orderErrorMessage.style.display = "none";
         axios
           .post(`http://localhost:3000/api/order`, {
             userId: userId,
@@ -36,7 +75,7 @@ export default class OrderView {
             address: address.value,
             items: items,
             bill: bill,
-            dayOfDelivery: deliveryOptions,
+            // dayOfDelivery: deliveryDay,
             shippingType: shippingType,
           })
           .then((res) => {
@@ -46,27 +85,31 @@ export default class OrderView {
             email.value = "";
             phone.value = "";
             address.value = "";
-            document.location.hash = `/`;
+            clearCartItems();
+            (document.getElementsByClassName(
+              "shopping-cart-navbar-items"
+            )[0].style.visibility = "hidden"),
+              (document.location.hash = `/`);
           })
           .catch((err) => {
             console.log(err);
-            // if (
-            //   err.response.data.errors &&
-            //   Object.values(err.response.data.errors)[0].message
-            // ) {
-            //   console.log(Object.values(err.response.data.errors)[0].message);
-            //   registerErrorMessage.innerText = Object.values(
-            //     err.response.data.errors
-            //   )[0].message;
-            //   registerErrorMessage.style.display = "block";
-            // } else if (err.response.data.keyValue["email"]) {
-            //   registerErrorMessage.innerText =
-            //     "This e-mail address already exists";
-            //   registerErrorMessage.style.display = "block";
-            // } else if (err.response.data.keyValue["username"]) {
-            //   registerErrorMessage.innerText = "This username already exists";
-            //   registerErrorMessage.style.display = "block";
-            // }
+            if (
+              err.response.data.errors &&
+              Object.values(err.response.data.errors)[0].message
+            ) {
+              console.log(Object.values(err.response.data.errors)[0].message);
+              registerErrorMessage.innerText = Object.values(
+                err.response.data.errors
+              )[0].message;
+              registerErrorMessage.style.display = "block";
+            } else if (err.response.data.keyValue["email"]) {
+              registerErrorMessage.innerText =
+                "This e-mail address already exists";
+              registerErrorMessage.style.display = "block";
+            } else if (err.response.data.keyValue["username"]) {
+              registerErrorMessage.innerText = "This username already exists";
+              registerErrorMessage.style.display = "block";
+            }
           });
       });
     }
@@ -115,23 +158,23 @@ export default class OrderView {
                       </div>
                       <p>Preferred day of delivery</p>
                           <div class='delivery-day btn-group'>
-                            <input type="radio" class="btn-check" name="deliveryOptions" id="monday" autocomplete="off"  />
+                            <input type="radio" class="btn-check" name="deliveryOptions" id="monday" value="monday" autocomplete="off"  />
                             <label class="btn btn-outline-light btn-secondary btn-create-new" for="monday">Monday</label>
                           
-                            <input type="radio" class="btn-check" name="deliveryOptions" id="tuesday" autocomplete="off" />
+                            <input type="radio" class="btn-check" name="deliveryOptions" id="tuesday" value="tuesday" autocomplete="off" />
                             <label class="btn btn-outline-light btn-secondary btn-create-new" for="tuesday">Tuesday</label>
                           
-                            <input type="radio" class="btn-check" name="deliveryOptions" id="wednesday" autocomplete="off" />
+                            <input type="radio" class="btn-check" name="deliveryOptions" id="wednesday" value="wednesday" autocomplete="off" />
                             <label class="btn btn-outline-light btn-secondary btn-create-new" for="wednesday">Wednesday</label>
-                            <input type="radio" class="btn-check" name="deliveryOptions" id="thursday" autocomplete="off" />
+                            <input type="radio" class="btn-check" name="deliveryOptions" id="thursday" value="thursday" autocomplete="off" />
                             <label class="btn btn-outline-light btn-secondary btn-create-new" for="thursday">Thursday</label>       
-                            <input type="radio" class="btn-check" name="deliveryOptions" id="friday" autocomplete="off" />
+                            <input type="radio" class="btn-check" name="deliveryOptions" id="friday" value="friday" autocomplete="off" />
                             <label class="btn btn-outline-light btn-secondary btn-create-new" for="friday">Friday</label> 
 
-                            <input type="radio" class="btn-check" name="deliveryOptions" id="saturday" autocomplete="off" />
+                            <input type="radio" class="btn-check" name="deliveryOptions" id="saturday" value="saturday" autocomplete="off" />
                             <label class="btn btn-outline-light btn-secondary btn-create-new" for="saturday">Saturday</label>       
                             </div>
-                      <button type="button" class="btn btn-outline-light btn-dark btn-lg btn-create-new">Submit</button>
+                      <button type="submit" class="btn btn-outline-light btn-dark btn-lg btn-create-new">Submit</button>
                     </form>
                 </div>
                 </div>

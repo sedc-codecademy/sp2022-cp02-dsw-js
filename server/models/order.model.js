@@ -19,9 +19,9 @@ const orderSchema = new Schema(
       type: String,
       required: [true, "Please give us your phone number"],
     },
-    adress: {
+    address: {
       type: String,
-      required: [true, "Please give us your phone address"],
+      required: [true, "Please give us your address"],
     },
     items: [
       {
@@ -47,8 +47,8 @@ const orderSchema = new Schema(
     },
     shippingType: {
       type: String,
-      enum: ["Standard", "Express"],
-      default: "Standard",
+      enum: ["standard", "express"],
+      default: "standard",
     },
   },
   { timestamps: true }

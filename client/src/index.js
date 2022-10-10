@@ -164,6 +164,7 @@ export default class App {
     await ProductsView.after_render(options);
     await SigninView.after_render();
     await RegisterView.after_render();
+    await OrderView.after_render();
   }
   static init() {
     const axios = require("axios").default;
