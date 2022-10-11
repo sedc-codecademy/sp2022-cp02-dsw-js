@@ -36,12 +36,19 @@ export default class OrderView {
         event.preventDefault();
         if (!localStorage.getItem("user")) {
           document.location.hash = `/signin`;
+        } else if (
+          !localStorage.getItem("cartItems") ||
+          localStorage.getItem("cartItems").length < 1
+        ) {
+          orderErrorMessage.style.display = "block";
+          orderErrorMessage.innerHTML =
+            "<p>You can not make an order, your cart is empty :(</p>";
         } else {
           // selecting delivery day
+          orderErrorMessage.style.display = "none";
           let deliveryDay;
           let ele = document.getElementsByName("deliveryOptions");
           for (let i = 0; i < ele.length; i++) {
-            console.log("ulazi li ovde uopste");
             if (ele[i].checked) {
               console.log(ele[i].value);
               deliveryDay = ele[i].value;
@@ -79,8 +86,8 @@ export default class OrderView {
               address: address.value,
               items: items,
               bill: bill,
-              // dayOfDelivery: deliveryDay,
-              shippingType: shippingType,
+              dayOfDelivery: deliveryDay,
+              shippingType: shippingType || "standard",
             })
             .then((res) => {
               console.log(res.data);
@@ -97,16 +104,18 @@ export default class OrderView {
             })
             .catch((err) => {
               console.log(err);
-              // if (
-              //   err.response.data.errors &&
-              //   Object.values(err.response.data.errors)[0].message
-              // ) {
-              //   console.log(Object.values(err.response.data.errors)[0].message);
-              //   registerErrorMessage.innerText = Object.values(
-              //     err.response.data.errors
-              //   )[0].message;
-              //   registerErrorMessage.style.display = "block";
-              // } else if (err.response.data.keyValue["email"]) {
+              if (err.response.data.error.errors.address) {
+                console.log("ulazi ovde address");
+                orderErrorMessage.innerHTML =
+                  "<p>You have to give us your address</p>";
+                orderErrorMessage.style.display = "block";
+              } else if (err.response.data.error.errors.phone) {
+                console.log("ulazi ovde phone");
+                orderErrorMessage.innerHTML =
+                  "<p>You have to give us your phone number</p>";
+                orderErrorMessage.style.display = "block";
+              }
+              // else if (err.response.data.keyValue["email"]) {
               //   registerErrorMessage.innerText =
               //     "This e-mail address already exists";
               //   registerErrorMessage.style.display = "block";
@@ -179,6 +188,7 @@ export default class OrderView {
                             <input type="radio" class="btn-check" name="deliveryOptions" id="saturday" value="saturday" autocomplete="off" />
                             <label class="btn btn-outline-light btn-secondary btn-create-new" for="saturday">Saturday</label>       
                             </div>
+                            <p class="order__error-message">Preferred day of delivery</p>
                       <button type="submit" class="btn btn-outline-light btn-dark btn-lg btn-create-new">Submit</button>
                     </form>
                 </div>

@@ -1407,6 +1407,14 @@ footer {
   text-transform: capitalize;
   display: none;
 }
+.order__error-message {
+  color: var(--jazzberry-jam);
+  text-align: center;
+  border-radius: 3px;
+  animation: slidein 0.7s;
+  text-transform: capitalize;
+  display: none;
+}
 @keyframes slidein {
   0% {
     transform: translateX(350px);
