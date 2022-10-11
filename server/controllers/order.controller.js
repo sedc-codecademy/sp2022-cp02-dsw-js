@@ -1,6 +1,7 @@
 const OrderService = require("../services/order.service");
 const User = require("../models/user.model");
 const Order = require("../models/order.model");
+const sendEmail = require("../services/email");
 
 class OrderController {
   //Get all orders
@@ -32,6 +33,23 @@ class OrderController {
   static async createOrder(req, res) {
     try {
       const orderData = req.body;
+      const message = `
+      Hi dear ${orderData.name},
+
+      We have recieved your order with following information:
+      email: ${orderData.email},
+      phone: ${orderData.phone},
+      address: ${orderData.address} .
+
+      Please check these info and let us know if something is not correct.
+
+      Otherwise, your order will be proceeded to our delivery service.
+
+      You have chosen ${orderData.shippingType} shipping and your total price is $${orderData.bill}.
+
+      Thank you for the trust and have a nice day!
+
+      Oryx Team `;
       console.log(orderData);
       const createdOrder = await OrderService.createOrder(orderData).then(
         async (newOrder) => {
@@ -41,6 +59,11 @@ class OrderController {
                 _id: newOrder._id,
               },
             },
+          });
+          await sendEmail({
+            email: orderData.email,
+            subject: "ORYX Order",
+            message,
           });
         }
       );

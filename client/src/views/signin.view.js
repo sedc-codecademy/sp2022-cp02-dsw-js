@@ -27,7 +27,11 @@ export default class SigninView {
             });
             emailLogin.value = "";
             passwordLogin.value = "";
-            document.location.hash = `/`;
+            if (sessionStorage.getItem("order")) {
+              document.location.hash = `/order`;
+            } else {
+              document.location.hash = `/`;
+            }
           })
           .catch((err) => {
             console.log(err);

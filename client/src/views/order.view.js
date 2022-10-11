@@ -33,84 +33,89 @@ export default class OrderView {
         email.value = JSON.parse(localStorage.getItem("user")).email;
       }
       orderForm.addEventListener("submit", async function (event) {
-        // selecting delivery day
-        let deliveryDay;
-        let ele = document.getElementsByName("deliveryOptions");
-        for (let i = 0; i < ele.length; i++) {
-          console.log("ulazi li ovde uopste");
-          if (ele[i].checked) {
-            console.log(ele[i].value);
-            deliveryDay = ele[i].value;
-          }
-        }
         event.preventDefault();
-        console.log(
-          "userId",
-          userId,
-          "name",
-          fullName.value,
-          "email",
-          email.value,
-          "phone",
-          phone.value,
-          "address",
-          address.value,
-          "items",
-          items,
-          "bill",
-          bill,
-          "dayOfDelivery",
-          deliveryDay,
-          "shippingType",
-          shippingType
-        );
-
-        // orderErrorMessage.style.display = "none";
-        axios
-          .post(`http://localhost:3000/api/order`, {
-            userId: userId,
-            name: fullName.value,
-            email: email.value,
-            phone: phone.value,
-            address: address.value,
-            items: items,
-            bill: bill,
-            // dayOfDelivery: deliveryDay,
-            shippingType: shippingType,
-          })
-          .then((res) => {
-            console.log(res.data);
-
-            fullName.value = "";
-            email.value = "";
-            phone.value = "";
-            address.value = "";
-            clearCartItems();
-            (document.getElementsByClassName(
-              "shopping-cart-navbar-items"
-            )[0].style.visibility = "hidden"),
-              (document.location.hash = `/`);
-          })
-          .catch((err) => {
-            console.log(err);
-            if (
-              err.response.data.errors &&
-              Object.values(err.response.data.errors)[0].message
-            ) {
-              console.log(Object.values(err.response.data.errors)[0].message);
-              registerErrorMessage.innerText = Object.values(
-                err.response.data.errors
-              )[0].message;
-              registerErrorMessage.style.display = "block";
-            } else if (err.response.data.keyValue["email"]) {
-              registerErrorMessage.innerText =
-                "This e-mail address already exists";
-              registerErrorMessage.style.display = "block";
-            } else if (err.response.data.keyValue["username"]) {
-              registerErrorMessage.innerText = "This username already exists";
-              registerErrorMessage.style.display = "block";
+        if (!localStorage.getItem("user")) {
+          document.location.hash = `/signin`;
+        } else {
+          // selecting delivery day
+          let deliveryDay;
+          let ele = document.getElementsByName("deliveryOptions");
+          for (let i = 0; i < ele.length; i++) {
+            console.log("ulazi li ovde uopste");
+            if (ele[i].checked) {
+              console.log(ele[i].value);
+              deliveryDay = ele[i].value;
             }
-          });
+          }
+
+          console.log(
+            "userId",
+            userId,
+            "name",
+            fullName.value,
+            "email",
+            email.value,
+            "phone",
+            phone.value,
+            "address",
+            address.value,
+            "items",
+            items,
+            "bill",
+            bill,
+            "dayOfDelivery",
+            deliveryDay,
+            "shippingType",
+            shippingType
+          );
+
+          // orderErrorMessage.style.display = "none";
+          axios
+            .post(`http://localhost:3000/api/order`, {
+              userId: userId,
+              name: fullName.value,
+              email: email.value,
+              phone: phone.value,
+              address: address.value,
+              items: items,
+              bill: bill,
+              // dayOfDelivery: deliveryDay,
+              shippingType: shippingType,
+            })
+            .then((res) => {
+              console.log(res.data);
+
+              fullName.value = "";
+              email.value = "";
+              phone.value = "";
+              address.value = "";
+              clearCartItems();
+              (document.getElementsByClassName(
+                "shopping-cart-navbar-items"
+              )[0].style.visibility = "hidden"),
+                (document.location.hash = `/`);
+            })
+            .catch((err) => {
+              console.log(err);
+              // if (
+              //   err.response.data.errors &&
+              //   Object.values(err.response.data.errors)[0].message
+              // ) {
+              //   console.log(Object.values(err.response.data.errors)[0].message);
+              //   registerErrorMessage.innerText = Object.values(
+              //     err.response.data.errors
+              //   )[0].message;
+              //   registerErrorMessage.style.display = "block";
+              // } else if (err.response.data.keyValue["email"]) {
+              //   registerErrorMessage.innerText =
+              //     "This e-mail address already exists";
+              //   registerErrorMessage.style.display = "block";
+              // } else if (err.response.data.keyValue["username"]) {
+              //   registerErrorMessage.innerText = "This username already exists";
+              //   registerErrorMessage.style.display = "block";
+              // }
+            });
+        }
       });
     }
   }
