@@ -1,17 +1,28 @@
 const User = require("../models/user.model");
-const verifyAcessToken = require("../const/jwt.const");
+const { verifyAccessToken } = require("../const/jwt.const");
 
 const authValidator = async (req, res, next) => {
   try {
-    const auhtorizationHeader = req.headers.authorization;
+    // 1) Getting token and check of it's there
+    let token;
+    if (
+      req.headers.authorization &&
+      req.headers.authorization.startsWith("Bearer")
+    ) {
+      token = req.headers.authorization.split(" ")[1];
+    } else if (req.cookies.jwt) {
+      token = req.cookies.jwt;
+    }
 
-    if (!auhtorizationHeader) return res.sendStatus(403);
+    // const auhtorizationHeader = req.body.headers.authorization;
 
-    const token = auhtorizationHeader.split(" ")[1];
+    // if (!auhtorizationHeader) return res.sendStatus(403);
+
+    // const token = auhtorizationHeader.split(" ")[1];
 
     if (!token) return res.sendStatus(403);
 
-    const { userId } = verifyAcessToken(token);
+    const { userId } = verifyAccessToken(token);
 
     const foundUser = await User.findById(userId);
 
@@ -22,19 +33,31 @@ const authValidator = async (req, res, next) => {
     next();
   } catch (err) {
     console.log(err);
-    res.sendStatus(403);
+    res.sendStatus(401);
   }
 };
 
-restrictTo = (...roles) => {
+const restrictTo = (...roles) => {
   return async (req, res, next) => {
     try {
-      console.log("headers ", req.headers);
-      const userId = req.headers.userid;
-      console.log(userId);
+      // console.log("headers ", req.headers);
+      // const userId = req.headers.userid;
+      // console.log(userId);
+
+      let token;
+      if (
+        req.headers.authorization &&
+        req.headers.authorization.startsWith("Bearer")
+      ) {
+        token = req.headers.authorization.split(" ")[1];
+      } else if (req.cookies.jwt) {
+        token = req.cookies.jwt;
+      }
+
+      const { userId } = verifyAccessToken(token);
 
       const foundUser = await User.findOne({ _id: userId });
-      console.log("user: ", foundUser);
+
       if (!foundUser) return res.sendStatus(403);
 
       if (!roles.includes(foundUser.role))

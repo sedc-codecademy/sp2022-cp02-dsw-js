@@ -124,20 +124,19 @@ export default class App {
             document
               .querySelector(".logout_button")
               .addEventListener("click", () => {
-                console.log("ovo mi treba ", localStorage.getItem("token"));
                 axios
                   .post(
-                    `http://localhost:3000/api/auth/logout`,
-                    {
-                      _id: JSON.parse(localStorage.getItem("user")).id,
-                    },
-                    {
-                      headers: {
-                        authorization: `Bearer ${localStorage.getItem(
-                          "token"
-                        )}`,
-                      },
-                    }
+                    `http://localhost:3000/api/auth/logout`
+                    // {
+                    //   _id: JSON.parse(localStorage.getItem("user")).id,
+                    // },
+                    // {
+                    //   headers: {
+                    //     authorization: `Bearer ${localStorage.getItem(
+                    //       "token"
+                    //     )}`,
+                    //   },
+                    // }
                   )
                   .then(() => {
                     localStorage.removeItem("user");

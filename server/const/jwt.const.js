@@ -2,12 +2,12 @@ const jwt = require("jsonwebtoken");
 
 const createAccessToken = (userId) => {
   return jwt.sign({ userId }, process.env.ACCESS_TOKEN_SECRET, {
-    expiresIn: "15m",
+    expiresIn: "7d",
   });
 };
 
 const verifyAccessToken = (token) => {
-  console.log("ulazi u verify");
+  // console.log("ulazi u verify");
   return jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
 };
 

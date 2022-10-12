@@ -13,12 +13,16 @@ export default class SigninView {
 
         loginErrorMessage.style.display = "none";
         axios
-          .post(`http://localhost:3000/api/auth/login`, {
-            email: emailLogin.value,
-            password: passwordLogin.value,
-          })
+          .post(
+            `http://localhost:3000/api/auth/login`,
+            {
+              email: emailLogin.value,
+              password: passwordLogin.value,
+            },
+            { withCredentials: true }
+          )
           .then((res) => {
-            setToken(res.data.token);
+            // setToken(res.data.token);
             setUser({
               fullName: res.data.fullName,
               username: res.data.username,

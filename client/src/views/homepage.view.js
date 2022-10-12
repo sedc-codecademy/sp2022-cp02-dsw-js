@@ -2,6 +2,7 @@ import ProductCard from "../components/product-card.component";
 export default class HomepageView {
   static async render({ request, data }) {
     const products = await data;
+    console.log(products);
     const random12Products = [...Array(products.length).keys()]
       .sort(() => 0.5 - Math.random())
       .slice(0, 12)
