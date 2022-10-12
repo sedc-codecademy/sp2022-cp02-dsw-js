@@ -56,7 +56,7 @@ export default class OrderView {
           }
 
           console.log(
-            "userId",
+            // "userId",
             userId,
             "name",
             fullName.value,

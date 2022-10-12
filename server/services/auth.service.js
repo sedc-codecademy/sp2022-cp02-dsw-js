@@ -18,10 +18,10 @@ class AuthService {
   // 2. Login user
   static async loginUser(email, password) {
     try {
-      if (!email) throw "Fill out your email";
-      if (!password) throw "Fill out your password";
+      if (!email) throw "Please fill out your email field";
+      if (!password) throw "Please fill out your password filed";
 
-      let user = await User.findOne({ email }).select("-refreshToken -role");
+      let user = await User.findOne({ email }).select(" -role");
 
       if (!user) throw "Invalid Credentials";
 
@@ -54,6 +54,7 @@ class AuthService {
   }
 
   // Save refresh token
+
   static async saveRefreshToken(user, refreshToken) {
     try {
       await User.findOneAndUpdate(
@@ -65,6 +66,7 @@ class AuthService {
       throw error;
     }
   }
+
   // Delete refresh token
   static async deleteRefreshToken(Id) {
     try {

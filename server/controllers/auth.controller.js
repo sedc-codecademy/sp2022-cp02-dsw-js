@@ -16,11 +16,21 @@ class AuthController {
 
       const token = createAccessToken(user._id);
 
-      const refreshToken = createRefreshToken(user._id);
+      // const refreshToken = createRefreshToken(user._id);
 
-      const newUser = await AuthService.saveRefreshToken(user, refreshToken);
+      // const newUser = await AuthService.saveRefreshToken(user, refreshToken);
 
-      res.status(201).send({ ...user.toJSON(), token });
+      res.cookie("jwt", token, {
+        expires: new Date(
+          Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
+        ),
+        httpOnly: true,
+      });
+
+      res.status(201).send({
+        ...user.toJSON(),
+        // token
+      });
     } catch (error) {
       console.log(error);
       res.status(400).send(error);
@@ -35,11 +45,21 @@ class AuthController {
 
       const token = createAccessToken(user._id);
 
-      const refreshToken = createRefreshToken(user._id);
+      // const refreshToken = createRefreshToken(user._id);
 
-      await AuthService.saveRefreshToken(user, refreshToken);
+      // await AuthService.saveRefreshToken(user, refreshToken);
 
-      res.status(200).send({ ...user.toJSON(), token });
+      res.cookie("jwt", token, {
+        expires: new Date(
+          Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
+        ),
+        httpOnly: true,
+      });
+
+      res.status(200).send({
+        ...user.toJSON(),
+        // token
+      });
     } catch (error) {
       console.log(error);
       res.status(401).send(error);
@@ -68,13 +88,21 @@ class AuthController {
   // Logout user
   static async logoutUser(req, res) {
     try {
-      const { _id } = req.body;
+      console.log("ulazi u constoller");
+      res.cookie("jwt", "loggedout", {
+        expires: new Date(Date.now() + 10 * 1000),
+        httpOnly: true,
+      });
+      res.status(200).json({ status: "success" });
+      // const { _id } = req.body;
+
+      // const { _id } = req.user;
 
       // const refreshToken = req.body.refreshToken;
 
-      await AuthService.deleteRefreshToken(_id);
+      // await AuthService.deleteRefreshToken(_id);
 
-      res.sendStatus(204);
+      // res.sendStatus(204);
     } catch (error) {
       console.log(error);
       res.status(400).send(error);
