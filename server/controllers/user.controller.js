@@ -1,6 +1,16 @@
 const UserService = require("../services/user.service");
 
 class UserController {
+  static async getAllUsers(req, res) {
+    try {
+      const user = await UserService.getAllUsers();
+      res.status(200).send(user);
+    } catch (error) {
+      console.log(error);
+      res.status(400).send(error);
+    }
+  }
+
   static async getUserById(req, res) {
     try {
       const userId = req.params.id;

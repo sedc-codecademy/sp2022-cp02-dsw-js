@@ -188,7 +188,7 @@ export default class OrderView {
                             <input type="radio" class="btn-check" name="deliveryOptions" id="saturday" value="saturday" autocomplete="off" />
                             <label class="btn btn-outline-light btn-secondary btn-create-new" for="saturday">Saturday</label>       
                             </div>
-                            <p class="order__error-message">Preferred day of delivery</p>
+                            <p class="order__error-message"></p>
                       <button type="submit" class="btn btn-outline-light btn-dark btn-lg btn-create-new">Submit</button>
                     </form>
                 </div>

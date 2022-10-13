@@ -2,7 +2,7 @@ const AuthService = require("../services/auth.service");
 const {
   createAccessToken,
   createRefreshToken,
-  verifyAccessToken,
+  // verifyAccessToken,
 } = require("../const/jwt.const.js");
 
 class AuthController {
@@ -105,18 +105,6 @@ class AuthController {
       // res.sendStatus(204);
     } catch (error) {
       console.log(error);
-      res.status(400).send(error);
-    }
-  }
-  // Logout all
-  static async logoutAll(req, res) {
-    try {
-      const user = req.body;
-
-      await AuthService.deleteAllRefreshTokens(user);
-
-      res.sendStatus(204);
-    } catch (error) {
       res.status(400).send(error);
     }
   }

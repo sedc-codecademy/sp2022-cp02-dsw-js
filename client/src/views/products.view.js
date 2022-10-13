@@ -25,6 +25,7 @@ export default class ProductsView {
         })
         .join("");
       let filterCategory = new Set();
+
       let filteredButtons = products
         .filter((product) => {
           const isPresentInSet = filterCategory.has(product.category);
@@ -35,6 +36,8 @@ export default class ProductsView {
           return ProductCard.category(product);
         })
         .join("");
+
+      console.log(filterCategory);
 
       $(document).ready(function () {
         $(".card-container").slice(0, 24).show();

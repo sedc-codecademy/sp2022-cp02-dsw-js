@@ -1,6 +1,12 @@
-const { User } = require("./auth.service");
+const User = require("../models/user.model");
 
 class UserService {
+  // Get all users
+  static async getAllUsers() {
+    const users = await User.find({});
+    if (!users) return Promise.reject({ message: "Users not found" });
+    return users;
+  }
   //Get user by id
   static async getUserById(userId) {
     console.log(userId);

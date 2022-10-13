@@ -95,7 +95,7 @@ export default class SigninView {
                       </div>
                   </form>
                 </div>
-              </div>
+              </div> 
               <div class="col-lg-6 d-flex align-items-center card-logo">
                 <div class="text-white px-3 py-4 p-md-5 mx-md-4">
                 <div class="text-company">
