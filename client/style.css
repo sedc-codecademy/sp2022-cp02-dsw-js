@@ -1425,6 +1425,27 @@ footer {
   text-transform: capitalize;
   display: none;
 }
+
+.emptyCart__error-message {
+  color: var(--jazzberry-jam);
+  text-align: center;
+  border-radius: 3px;
+  animation: slidein 0.7s;
+  text-transform: capitalize;
+  display: none;
+}
+
+.blink_me {
+  color: var(--jazzberry-jam);
+  animation: blinker 1s linear infinite;
+}
+
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
+}
+
 @keyframes slidein {
   0% {
     transform: translateX(350px);

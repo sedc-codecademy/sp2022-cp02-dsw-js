@@ -125,19 +125,7 @@ export default class App {
               .querySelector(".logout_button")
               .addEventListener("click", () => {
                 axios
-                  .post(
-                    `http://localhost:3000/api/auth/logout`
-                    // {
-                    //   _id: JSON.parse(localStorage.getItem("user")).id,
-                    // },
-                    // {
-                    //   headers: {
-                    //     authorization: `Bearer ${localStorage.getItem(
-                    //       "token"
-                    //     )}`,
-                    //   },
-                    // }
-                  )
+                  .post(`http://localhost:3000/api/auth/logout`)
                   .then(() => {
                     localStorage.removeItem("user");
                     localStorage.removeItem("token");
