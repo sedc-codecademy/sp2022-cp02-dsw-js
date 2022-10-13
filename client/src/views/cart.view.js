@@ -1,5 +1,5 @@
 import CartItem from "../components/cart-item.component";
-import { getCartItems, setBill } from "../local-storage";
+import { getCartItems } from "../local-storage";
 import { setOrderInfo } from "../session-storage";
 import {
   deleteCartItem,
@@ -18,18 +18,41 @@ export default class CartView {
     deleteCartItem(CartView);
 
     const selectShippingOption = document.querySelector(".shipping-options");
+
+    const shippingErrMessage = document.querySelector(
+      ".shipping__error-message"
+    );
+
+    const emptyCartMessage = document.querySelector(
+      ".emptyCart__error-message"
+    );
+
+    const orderButton = document.querySelector(".cart__summary__form__btn");
+
     if (selectShippingOption) {
       selectShippingOption.addEventListener("change", (e) => {
-        let shippingOption = e.target.value;
-        setOrderInfo(shippingOption);
+        shippingErrMessage.classList.remove("blink_me");
+        setOrderInfo(e.target.value);
+      });
+    }
+
+    if (orderButton) {
+      orderButton.addEventListener("click", () => {
+        if (selectShippingOption.value === "") {
+          shippingErrMessage.classList.add("blink_me");
+        } else if (getCartItems().length < 1) {
+          console.log("ulazi ovde");
+          emptyCartMessage.innerText = "Your Shopping Cart is empty :(";
+          emptyCartMessage.style.display = "block";
+        } else {
+          emptyCartMessage.style.display = "none";
+          shippingErrMessage.classList.remove("blink_me");
+          document.location.hash = `/order`;
+        }
       });
     }
   }
   static async render() {
-    // window.scrollTo({
-    //   top: 0,
-    // });
-
     const cartItems = getCartItems();
     const filteredPrice = cartItems.map((x) => {
       if (x.discountPrice == null) {
@@ -93,9 +116,10 @@ export default class CartView {
                 ${filteredPrice.reduce((a, c) => a + c, 0).toFixed(2)}
               </div>
             </div>
-            <a href="/#/order" class="order-now-link link-light">
+            <div class="order-now-link link-light">
               <button class="cart__summary__form__btn mb-4">ORDER NOW</button>
-            </a>
+            </div>
+            <div class="emptyCart__error-message"></div>
             <div class="shipping__error-message mt-3 mb-3 fs-6">* Select delivery method
             </div>
           </div>

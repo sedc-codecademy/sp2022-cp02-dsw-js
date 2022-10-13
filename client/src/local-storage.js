@@ -20,6 +20,5 @@ export const setUser = (userData) => {
 };
 
 export const setBill = (bill) => {
-  console.log("ulazi ovde");
   localStorage.setItem("bill", bill);
 };

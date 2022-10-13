@@ -24,7 +24,7 @@ export default class OrderView {
       // from local storage
       const items = JSON.parse(localStorage.getItem("cartItems"));
       const bill = JSON.parse(localStorage.getItem("bill"));
-      const shippingType = getOrderInfo();
+      const shippingType = getOrderInfo() || "standard";
 
       //
       if (localStorage.getItem("user")) {
@@ -46,7 +46,7 @@ export default class OrderView {
         } else {
           // selecting delivery day
           orderErrorMessage.style.display = "none";
-          let deliveryDay;
+          let deliveryDay = "Monday";
           let ele = document.getElementsByName("deliveryOptions");
           for (let i = 0; i < ele.length; i++) {
             if (ele[i].checked) {
@@ -87,7 +87,7 @@ export default class OrderView {
               items: items,
               bill: bill,
               dayOfDelivery: deliveryDay,
-              shippingType: shippingType || "standard",
+              shippingType: shippingType,
             })
             .then((res) => {
               console.log(res.data);

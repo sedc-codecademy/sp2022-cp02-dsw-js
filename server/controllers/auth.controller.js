@@ -88,7 +88,6 @@ class AuthController {
   // Logout user
   static async logoutUser(req, res) {
     try {
-      console.log("ulazi u constoller");
       res.cookie("jwt", "loggedout", {
         expires: new Date(Date.now() + 10 * 1000),
         httpOnly: true,
