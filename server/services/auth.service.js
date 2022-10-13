@@ -55,17 +55,17 @@ class AuthService {
 
   // Save refresh token
 
-  static async saveRefreshToken(user, refreshToken) {
-    try {
-      await User.findOneAndUpdate(
-        { _id: user._id },
-        { $set: { refreshToken: refreshToken } }
-      );
-    } catch (error) {
-      console.log(error);
-      throw error;
-    }
-  }
+  // static async saveRefreshToken(user, refreshToken) {
+  //   try {
+  //     await User.findOneAndUpdate(
+  //       { _id: user._id },
+  //       { $set: { refreshToken: refreshToken } }
+  //     );
+  //   } catch (error) {
+  //     console.log(error);
+  //     throw error;
+  //   }
+  // }
 
   // Delete refresh token
   static async deleteRefreshToken(Id) {

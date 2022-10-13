@@ -1415,6 +1415,16 @@ footer {
   text-transform: capitalize;
   display: none;
 }
+
+.contact__error-message {
+  color: var(--jazzberry-jam);
+  text-align: center;
+  padding-top: 20px;
+  border-radius: 3px;
+  animation: slidein 0.7s;
+  text-transform: capitalize;
+  display: none;
+}
 @keyframes slidein {
   0% {
     transform: translateX(350px);

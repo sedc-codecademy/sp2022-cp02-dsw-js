@@ -46,10 +46,6 @@ const userSchema = new Schema({
     ],
     default: [],
   },
-  refreshToken: {
-    type: String,
-    default: "",
-  },
 });
 
 userSchema.methods.comparePasswords = async function (loginPassword) {

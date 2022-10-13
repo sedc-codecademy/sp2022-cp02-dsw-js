@@ -1,4 +1,70 @@
+const axios = require("axios").default;
+
 export default class ContactView {
+  static after_render() {
+    const contactForm = document.getElementById("contactForm");
+    const contactErrorMessage = document.querySelector(
+      ".contact__error-message"
+    );
+
+    if (contactForm) {
+      const fullName = document.getElementById("contactBlockName1");
+      const email = document.getElementById("contactBlockEmail2");
+      const phone = document.getElementById("contactBlockPhone3");
+      const message = document.getElementById("contactBlockMessage4");
+
+      if (localStorage.getItem("user")) {
+        fullName.value = JSON.parse(localStorage.getItem("user")).fullName;
+        email.value = JSON.parse(localStorage.getItem("user")).email;
+      }
+      contactForm.addEventListener("submit", async function (event) {
+        event.preventDefault();
+
+        console.log(
+          "name",
+          fullName.value,
+          "email",
+          email.value,
+          "phone",
+          phone.value,
+          "message",
+          message.value
+        );
+
+        if (!message.value) {
+          contactErrorMessage.style.display = "block";
+          contactErrorMessage.innerHTML = "<p>Your message field is empty</p>";
+        } else if (!fullName.value) {
+          contactErrorMessage.style.display = "block";
+          contactErrorMessage.innerHTML = "<p>Please tell us your name</p>";
+        } else if (!email.value) {
+          contactErrorMessage.style.display = "block";
+          contactErrorMessage.innerHTML = "<p>Email field is empty</p>";
+        } else {
+          contactErrorMessage.style.display = "none";
+          axios
+            .post(`http://localhost:3000/api/contact`, {
+              name: fullName.value,
+              email: email.value,
+              phone: phone.value,
+              message: message.value,
+            })
+            .then((res) => {
+              console.log(res.data);
+
+              fullName.value = "";
+              email.value = "";
+              phone.value = "";
+              message.value = "";
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        }
+      });
+    }
+  }
+
   static render() {
     window.scrollTo({
       top: 0,
@@ -18,7 +84,7 @@ export default class ContactView {
                   <h4 class="mb-4">Contact us</h4>
                   <p>We're happy to answer questions or help you with returns.
                       Please fill out the form below if you need assistance.</p>   
-                      <form>
+                      <form id="contactForm">
                       <div class="row">
                         <div class="col-md-6">
                         <div class="form-floating mb-4">
@@ -41,8 +107,10 @@ export default class ContactView {
                         <textarea class="form-control" id="contactBlockMessage4" rows="4" placeholder="Enter Message"></textarea>
                         <label class="form-label" for="contactBlockMessage4">Message</label>
                       </div>
-                      <button type="button" class="btn btn-outline-light btn-dark btn-lg btn-create-new">Send message</button>
-                    </form>
+                      
+                      <button type="submit" class="btn btn-outline-light btn-dark btn-lg btn-create-new">Send message</button>
+                      <p class="contact__error-message"></p>
+                      </form>
                 </div>
                 </div>
               </div>

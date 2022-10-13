@@ -5,7 +5,11 @@ export default class FilteredProductsView {
     const mainCategory =
       resource === "men" ? "male" : resource === "women" ? "female" : "sale";
     const categoryHeader =
-      resource === "men" ? "MEN'S COLLECTION" : resource === "women" ? "WOMEN'S COLLECTION" : "COLLECTION ON SALE";
+      resource === "men"
+        ? "MEN'S COLLECTION"
+        : resource === "women"
+        ? "WOMEN'S COLLECTION"
+        : "COLLECTION ON SALE";
     console.log("Category", mainCategory);
     const products = await data;
     const filteredData = products
