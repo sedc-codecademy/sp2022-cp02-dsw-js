@@ -38,12 +38,11 @@ export default class CartView {
 
     if (orderButton) {
       orderButton.addEventListener("click", () => {
-        if (selectShippingOption.value === "") {
-          shippingErrMessage.classList.add("blink_me");
-        } else if (getCartItems().length < 1) {
-          console.log("ulazi ovde");
+        if (getCartItems().length < 1) {
           emptyCartMessage.innerText = "Your Shopping Cart is empty :(";
           emptyCartMessage.style.display = "block";
+        } else if (selectShippingOption.value === "") {
+          shippingErrMessage.classList.add("blink_me");
         } else {
           emptyCartMessage.style.display = "none";
           shippingErrMessage.classList.remove("blink_me");

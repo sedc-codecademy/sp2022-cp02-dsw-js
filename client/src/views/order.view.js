@@ -55,27 +55,6 @@ export default class OrderView {
             }
           }
 
-          console.log(
-            // "userId",
-            userId,
-            "name",
-            fullName.value,
-            "email",
-            email.value,
-            "phone",
-            phone.value,
-            "address",
-            address.value,
-            "items",
-            items,
-            "bill",
-            bill,
-            "dayOfDelivery",
-            deliveryDay,
-            "shippingType",
-            shippingType
-          );
-
           // orderErrorMessage.style.display = "none";
           axios
             .post(`http://localhost:3000/api/order`, {
@@ -115,14 +94,6 @@ export default class OrderView {
                   "<p>You have to give us your phone number</p>";
                 orderErrorMessage.style.display = "block";
               }
-              // else if (err.response.data.keyValue["email"]) {
-              //   registerErrorMessage.innerText =
-              //     "This e-mail address already exists";
-              //   registerErrorMessage.style.display = "block";
-              // } else if (err.response.data.keyValue["username"]) {
-              //   registerErrorMessage.innerText = "This username already exists";
-              //   registerErrorMessage.style.display = "block";
-              // }
             });
         }
       });

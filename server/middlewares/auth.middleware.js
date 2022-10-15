@@ -20,13 +20,19 @@ const authValidator = async (req, res, next) => {
 
     // const token = auhtorizationHeader.split(" ")[1];
 
-    if (!token) return res.sendStatus(403);
+    if (!token)
+      return res
+        .status(401)
+        .send({ message: `You are not authenticated, please log in first.` });
 
     const { userId } = verifyAccessToken(token);
 
     const foundUser = await User.findById(userId);
 
-    if (!foundUser) return res.sendStatus(403);
+    if (!foundUser)
+      return res
+        .status(401)
+        .send({ message: `You are not authenticated, please log in first.` });
 
     req.user = foundUser;
 
