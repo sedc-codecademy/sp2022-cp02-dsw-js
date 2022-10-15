@@ -35,7 +35,7 @@ class OrderService {
     });
 
     const updatedOrder = await order.save();
-    return updateOrder;
+    return updatedOrder;
   }
   //Delete order
   static async deleteOrder(orderId) {

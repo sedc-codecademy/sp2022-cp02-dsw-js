@@ -20,17 +20,6 @@ export default class ContactView {
       contactForm.addEventListener("submit", async function (event) {
         event.preventDefault();
 
-        console.log(
-          "name",
-          fullName.value,
-          "email",
-          email.value,
-          "phone",
-          phone.value,
-          "message",
-          message.value
-        );
-
         if (!message.value) {
           contactErrorMessage.style.display = "block";
           contactErrorMessage.innerHTML = "<p>Your message field is empty</p>";
@@ -49,17 +38,14 @@ export default class ContactView {
               phone: phone.value,
               message: message.value,
             })
-            .then((res) => {
-              console.log(res.data);
-
-              fullName.value = "";
-              email.value = "";
-              phone.value = "";
-              message.value = "";
-            })
             .catch((err) => {
               console.log(err);
             });
+          fullName.value = "";
+          email.value = "";
+          phone.value = "";
+          message.value = "";
+          document.location.hash = `/`;
         }
       });
     }

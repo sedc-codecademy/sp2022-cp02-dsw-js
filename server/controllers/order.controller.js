@@ -78,10 +78,18 @@ class OrderController {
     try {
       const orderId = req.params.id;
       const updateData = req.body;
-      if (updateData.id)
-        return send.status(400).send({ message: "Invalid update" });
+      // if (updateData.id) {
+      //   console.log(updateData.id);
+      //   return send.status(400).send({ message: "Invalid update" });
+      // }
+
       const updatedOrder = await OrderService.updateOrder(orderId, updateData);
-      res.status(200).send(updatedOrder);
+      res.status(200).json({
+        status: "success",
+        data: {
+          updatedOrder,
+        },
+      });
     } catch (error) {
       console.log(error);
       res.status(400).send(error);
